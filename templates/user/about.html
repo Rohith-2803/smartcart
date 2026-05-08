@@ -1,0 +1,39 @@
+{% extends "user/base.html" %}
+
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+<div style="padding: 4rem 0; max-width: 800px; margin: 0 auto;">
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <h1 style="font-size: 3rem; font-weight: 800; color: #1e293b; margin-bottom: 1rem;">About <span style="color: #6366f1;">SmartCart</span></h1>
+        <p style="font-size: 1.25rem; color: #64748b; line-height: 1.6;">Your ultimate destination for a seamless and delightful shopping experience.</p>
+    </div>
+
+    <div class="card" style="padding: 2.5rem; border: none; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); border-radius: 24px; background: white;">
+        <div style="margin-bottom: 2rem;">
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-bottom: 1rem;">Our Mission</h2>
+            <p style="color: #475569; line-height: 1.7;">At SmartCart, we believe that shopping should be effortless, secure, and enjoyable. Our mission is to provide a platform where quality meets convenience, offering a curated selection of products that cater to your everyday needs and desires.</p>
+        </div>
+
+        <div style="margin-bottom: 2rem;">
+            <h2 style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-bottom: 1rem;">What We Offer</h2>
+            <ul style="color: #475569; line-height: 1.8; padding-left: 1.25rem;">
+                <li><strong>Premium Quality:</strong> We partner with trusted suppliers to ensure you get the best.</li>
+                <li><strong>Secure Payments:</strong> Your safety is our priority. We use industry-standard encryption.</li>
+                <li><strong>Fast Delivery:</strong> We know you want your items quickly, and we work hard to make that happen.</li>
+                <li><strong>Customer Support:</strong> Our team is always here to help you with any queries.</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; padding-top: 1rem;">
+            <p style="color: #94a3b8; font-style: italic;">"SmartCart: Revolutionizing the way you shop, one click at a time."</p>
+        </div>
+    </div>
+
+    {% if not session.get('admin_id') %}
+    <div style="margin-top: 3rem; text-align: center;">
+        <a href="{{ url_for('shop') }}" class="btn-gradient" style="width: auto; padding: 1rem 2.5rem; font-size: 1.1rem;">Explore Our Shop</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

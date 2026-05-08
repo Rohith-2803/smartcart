@@ -1,0 +1,35 @@
+{% extends "user/base.html" %}
+
+{% block title %}Admin Signup{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.5rem;"><i class="fas fa-user-shield"></i> Admin Signup</h1>
+        <p style="color: #64748b;">Create an administrative account.</p>
+    </div>
+
+    <form action="{{ url_for('admin_signup') }}" method="POST">
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label for="name" style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Full Name</label>
+            <input type="text" id="name" name="name" class="form-control" placeholder="John Doe" required style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 10px;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label for="email" style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Email Address</label>
+            <input type="email" id="email" name="email" class="form-control" placeholder="admin@example.com" required style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 10px;">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label for="password" style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Password</label>
+            <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 10px;">
+        </div>
+
+        <button type="submit" class="btn-gradient" style="margin-top: 1rem;">Create Account</button>
+    </form>
+
+    <div style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem;">
+        <p style="color: #64748b;">Already have an account? <a href="{{ url_for('admin_login') }}" style="color: #6366f1; font-weight: 600; text-decoration: none;">Login here</a></p>
+    </div>
+</div>
+{% endblock %}

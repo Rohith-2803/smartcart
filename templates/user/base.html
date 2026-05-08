@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCart - {% block title %}{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --font-main: 'Outfit', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .user-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.6rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .auth-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            margin: 4rem auto;
+        }
+
+        .btn-gradient {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);
+        }
+
+        .nav-link-user {
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-link-user:hover {
+            color: #6366f1;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="user-nav">
+        <div class="container" style="padding: 0 1rem; display: flex; justify-content: space-between; align-items: center;">
+            <a href="/" style="font-size: 1.35rem; font-weight: 800; color: #6366f1; text-decoration: none;">
+                <i class="fas fa-shopping-cart"></i> SmartCart
+            </a>
+            <div style="display: flex; gap: 1.75rem; align-items: center;">
+                <a href="/" class="nav-link-user" style="font-size: 1rem;">Home</a>
+                
+                {% if request.endpoint in ['user_login', 'user_signup', 'admin_login', 'admin_signup', 'about', 'contact', 'admin_forgot_password', 'forgot_password', 'verify_otp', 'superadmin_login', 'superadmin_signup', 'superadmin_forgot_password'] %}
+                <a href="{{ url_for('about') }}" class="nav-link-user" style="font-size: 1rem;">About</a>
+                <a href="{{ url_for('contact') }}" class="nav-link-user" style="font-size: 1rem;">Contact Us</a>
+                {% else %}
+                <a href="{{ url_for('shop') }}" class="nav-link-user" style="font-size: 1rem;">Shop</a>
+                <a href="{{ url_for('view_wishlist') }}" class="nav-link-user" style="font-size: 1rem;">
+                    <i class="far fa-heart"></i> Wishlist
+                </a>
+                <a href="{{ url_for('view_cart') }}" class="nav-link-user" style="position: relative; font-size: 1rem;">
+                    Cart
+                    {% set cart_count = session.get('cart', {})|length %}
+                    {% if cart_count > 0 %}
+                    <span style="position: absolute; top: -10px; right: -12px; background: #6366f1; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; border: 2px solid white;">
+                        {{ cart_count }}
+                    </span>
+                    {% endif %}
+                </a>
+                {% if session.get('user_id') %}
+                <a href="{{ url_for('my_orders') }}" class="nav-link-user" style="font-size: 1rem;">My Orders</a>
+                <a href="{{ url_for('user_profile') }}" class="nav-link-user" style="font-size: 1rem;">Profile</a>
+                {% endif %}
+                {% endif %}
+
+                {% if session.get('user_id') %}
+                <a href="{{ url_for('user_logout') }}" class="btn" style="background: #fee2e2; color: #ef4444; width: auto; font-size: 0.9rem; padding: 0.5rem 1.25rem; border-radius: 10px;">Logout</a>
+                {% elif session.get('admin_id') %}
+                <a href="{{ url_for('admin_logout') }}" class="btn" style="background: #fee2e2; color: #ef4444; width: auto; font-size: 0.9rem; padding: 0.5rem 1.25rem; border-radius: 10px;">Logout</a>
+                {% else %}
+                {% if request.endpoint != 'user_login' and request.endpoint != 'admin_login' %}
+                <a href="{{ url_for('user_login') }}" class="nav-link-user" style="font-size: 1rem;">Login</a>
+                {% endif %}
+                {% if request.endpoint != 'user_signup' and request.endpoint != 'admin_signup' %}
+                <a href="{{ url_for('user_signup') }}" class="btn-gradient" style="width: auto; padding: 0.6rem 1.5rem; font-size: 0.95rem; border-radius: 12px;">Sign Up</a>
+                {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}" style="margin-top: 1rem;">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer style="margin-top: 2rem; padding: 1.5rem 0; text-align: center; color: #94a3b8; border-top: 1px solid #e2e8f0;">
+        <p>&copy; 2026 SmartCart. Built with ❤️ for shoppers.</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    alert.style.transition = "opacity 0.5s ease";
+                    alert.style.opacity = "0";
+                    setTimeout(() => alert.remove(), 500);
+                }, 5000);
+            });
+        });
+    </script>
+</body>
+
+</html>

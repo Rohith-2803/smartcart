@@ -1,0 +1,101 @@
+{% extends "user/base.html" %}
+
+{% block title %}My Profile - SmartCart{% endblock %}
+
+{% block content %}
+<div style="padding: 3rem 0; max-width: 800px; margin: 0 auto;">
+    <h1 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 2rem; text-align: center;">Account Settings</h1>
+
+    <div class="card" style="background: white; border-radius: 24px; padding: 3rem; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);">
+        <form action="{{ url_for('user_profile') }}" method="POST" enctype="multipart/form-data">
+            
+            <!-- Profile Photo Section -->
+            <div style="margin-bottom: 2rem; display: flex; align-items: center; gap: 1.5rem; padding-bottom: 2rem; border-bottom: 1px solid #f1f5f9;">
+                <div style="position: relative;">
+                    {% if user.profile_image and user.profile_image != 'default.png' %}
+                    <img src="{{ url_for('static', filename='uploads/user_profiles/' + user.profile_image) }}" 
+                         alt="Profile Photo" id="profilePreview"
+                         style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #6366f1;">
+                    {% else %}
+                    <div id="profileInitial" style="width: 100px; height: 100px; border-radius: 50%; background: var(--primary-gradient); color: white; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 800;">
+                        {{ user.name[0]|upper }}
+                    </div>
+                    <img src="" alt="Profile Photo" id="profilePreview" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #6366f1; display: none;">
+                    {% endif %}
+                    
+                    <!-- Camera icon overlay -->
+                    <label for="profile_image" style="position: absolute; bottom: 0; right: 0; background: #6366f1; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; transition: all 0.3s;" title="Change photo">
+                        <i class="fas fa-camera" style="font-size: 0.8rem;"></i>
+                    </label>
+                    <input type="file" name="profile_image" id="profile_image" accept="image/*" style="display: none;" onchange="previewImage(this)">
+                </div>
+                <div>
+                    <h2 style="font-size: 1.5rem; font-weight: 700; color: #1e293b;">{{ user.name }}</h2>
+                    <p style="color: #64748b;">Member since {{ user.created_at.strftime('%B %Y') if user.created_at else 'recently' }}</p>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.25rem;">Click the <i class="fas fa-camera"></i> icon to change photo</p>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+                <div>
+                    <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.5rem; font-size: 0.9rem;">Full Name</label>
+                    <input type="text" name="name" value="{{ user.name }}" required 
+                           style="width: 100%; padding: 1rem 1.25rem; border: 1px solid #cbd5e1; border-radius: 12px; font-family: inherit; font-size: 1rem; transition: all 0.3s;"
+                           onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 4px rgba(99,102,241,0.1)'"
+                           onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none'">
+                </div>
+
+                <div>
+                    <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.5rem; font-size: 0.9rem;">Email Address</label>
+                    <input type="email" name="email" value="{{ user.email }}" required 
+                           style="width: 100%; padding: 1rem 1.25rem; border: 1px solid #cbd5e1; border-radius: 12px; font-family: inherit; font-size: 1rem; transition: all 0.3s;"
+                           onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 4px rgba(99,102,241,0.1)'"
+                           onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none'">
+                </div>
+            </div>
+
+            <div style="margin-bottom: 2rem;">
+                <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.5rem; font-size: 0.9rem;">New Password (Optional)</label>
+                <div style="position: relative;">
+                    <i class="fas fa-lock" style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                    <input type="password" name="new_password" placeholder="Leave blank to keep current password"
+                           style="width: 100%; padding: 1rem 1.25rem 1rem 3rem; border: 1px solid #cbd5e1; border-radius: 12px; font-family: inherit; font-size: 1rem; transition: all 0.3s;"
+                           onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 4px rgba(99,102,241,0.1)'"
+                           onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none'">
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 3rem;">
+                <a href="{{ url_for('user_dashboard') }}" class="btn" style="background: #f1f5f9; color: #475569; text-decoration: none; padding: 1rem 2rem; border-radius: 12px; font-weight: 600;">Cancel</a>
+                <button type="submit" class="btn-gradient" style="width: auto; padding: 1rem 2.5rem; border-radius: 12px;">Save Changes</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card" style="background: white; border-radius: 24px; padding: 2rem; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); margin-top: 2rem; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h3 style="font-size: 1.25rem; font-weight: 700; color: #1e293b; margin-bottom: 0.25rem;">Your Addresses</h3>
+            <p style="color: #64748b; font-size: 0.95rem;">Manage your saved shipping addresses for faster checkout.</p>
+        </div>
+        <a href="{{ url_for('user_addresses') }}" class="btn-gradient" style="width: auto; padding: 0.8rem 1.5rem; border-radius: 12px; text-decoration: none;">Manage Addresses</a>
+    </div>
+</div>
+
+<script>
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var preview = document.getElementById('profilePreview');
+            var initial = document.getElementById('profileInitial');
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            if (initial) {
+                initial.style.display = 'none';
+            }
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+{% endblock %}

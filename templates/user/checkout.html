@@ -1,0 +1,281 @@
+{% extends "user/base.html" %}
+
+{% block title %}Checkout - SmartCart{% endblock %}
+
+{% block content %}
+<div style="padding: 3rem 0; max-width: 900px; margin: 0 auto;">
+    <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
+        
+        <!-- Step 1: Address Selection -->
+        {% if step == 'address' %}
+        <div style="flex: 1; min-width: 300px;">
+            <div style="background: white; padding: 2.5rem; border-radius: 24px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border: 1px solid #e2e8f0;">
+                <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                    <i class="fas fa-map-marker-alt" style="color: #6366f1;"></i> Select Delivery Address
+                </h2>
+                <p style="color: #94a3b8; margin-bottom: 2rem; font-size: 0.9rem;">Choose from saved addresses or add a new one</p>
+
+                <!-- Saved Addresses -->
+                {% if saved_addresses and saved_addresses|length > 0 %}
+                <form action="{{ url_for('checkout') }}" method="POST" id="addressForm">
+                    <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2rem;">
+                        {% for addr in saved_addresses %}
+                        <label style="display: flex; align-items: flex-start; gap: 1rem; padding: 1.25rem; border: 2px solid {{ '#6366f1' if addr.is_default else '#e2e8f0' }}; border-radius: 16px; cursor: pointer; transition: all 0.3s; background: {{ '#f5f3ff' if addr.is_default else 'white' }};" 
+                               onmouseover="this.style.borderColor='#6366f1'; this.style.background='#f5f3ff'"
+                               onmouseout="if(!this.querySelector('input').checked){this.style.borderColor='#e2e8f0'; this.style.background='white'}"
+                               id="addr-label-{{ addr.address_id }}">
+                            <input type="radio" name="address_id" value="{{ addr.address_id }}" 
+                                   {{ 'checked' if addr.is_default }}
+                                   style="margin-top: 4px; accent-color: #6366f1; width: 18px; height: 18px;"
+                                   onchange="highlightSelected(this, {{ addr.address_id }})">
+                            <div style="flex: 1;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+                                    <span style="font-weight: 700; color: #1e293b;">{{ addr.full_name }}</span>
+                                    <span style="background: {{ '#6366f1' if addr.label == 'Home' else '#f59e0b' if addr.label == 'Work' else '#10b981' }}; color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 6px; font-weight: 600;">{{ addr.label }}</span>
+                                    {% if addr.is_default %}
+                                    <span style="background: #d1fae5; color: #059669; font-size: 0.7rem; padding: 2px 8px; border-radius: 6px; font-weight: 600;">Default</span>
+                                    {% endif %}
+                                </div>
+                                <p style="color: #475569; font-size: 0.9rem; line-height: 1.5; margin: 0;">
+                                    {{ addr.address_line1 }}{% if addr.address_line2 %}, {{ addr.address_line2 }}{% endif %}
+                                </p>
+                                <p style="color: #475569; font-size: 0.9rem; margin: 0;">
+                                    {{ addr.city }} - {{ addr.pincode }}, {{ addr.state }}
+                                </p>
+                                <p style="color: #64748b; font-size: 0.85rem; margin-top: 0.25rem;">
+                                    <i class="fas fa-phone-alt" style="font-size: 0.75rem;"></i> {{ addr.phone }}
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 0.5rem; align-items: flex-start;">
+                                {% if not addr.is_default %}
+                                <a href="{{ url_for('set_default_address', address_id=addr.address_id) }}" title="Set as default" style="color: #94a3b8; font-size: 0.8rem; text-decoration: none;" onclick="event.stopPropagation();">
+                                    <i class="fas fa-star"></i>
+                                </a>
+                                {% endif %}
+                                <a href="{{ url_for('delete_address', address_id=addr.address_id) }}" title="Delete" style="color: #ef4444; font-size: 0.8rem;" onclick="event.stopPropagation(); return confirm('Delete this address?');">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </div>
+                        </label>
+                        {% endfor %}
+                    </div>
+
+                    <button type="submit" class="btn-gradient" style="padding: 1.15rem; font-size: 1.05rem; border-radius: 14px; width: 100%;">
+                        Deliver to this Address <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                    </button>
+                </form>
+
+                <div style="display: flex; align-items: center; gap: 1rem; margin: 2rem 0;">
+                    <hr style="flex: 1; border: none; border-top: 1px solid #e2e8f0;">
+                    <span style="color: #94a3b8; font-weight: 600; font-size: 0.85rem;">OR ADD NEW ADDRESS</span>
+                    <hr style="flex: 1; border: none; border-top: 1px solid #e2e8f0;">
+                </div>
+                {% endif %}
+
+                <!-- Add New Address Form -->
+                <div id="newAddressForm">
+                    {% if not saved_addresses or saved_addresses|length == 0 %}
+                    <p style="color: #64748b; margin-bottom: 1.5rem; text-align: center; font-size: 0.95rem;">
+                        <i class="fas fa-info-circle" style="color: #6366f1;"></i> No saved addresses yet. Add your first delivery address below.
+                    </p>
+                    {% endif %}
+
+                    <form action="{{ url_for('checkout') }}" method="POST">
+                        <!-- Address Type -->
+                        <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem;">
+                            <label style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.65rem; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-weight: 600; font-size: 0.9rem;" id="label-Home">
+                                <input type="radio" name="label" value="Home" checked style="display: none;" onchange="selectLabel('Home')">
+                                <i class="fas fa-home"></i> Home
+                            </label>
+                            <label style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.65rem; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-weight: 600; font-size: 0.9rem;" id="label-Work">
+                                <input type="radio" name="label" value="Work" style="display: none;" onchange="selectLabel('Work')">
+                                <i class="fas fa-briefcase"></i> Work
+                            </label>
+                            <label style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.65rem; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; transition: all 0.3s; font-weight: 600; font-size: 0.9rem;" id="label-Other">
+                                <input type="radio" name="label" value="Other" style="display: none;" onchange="selectLabel('Other')">
+                                <i class="fas fa-map-pin"></i> Other
+                            </label>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                            <div>
+                                <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.4rem; font-size: 0.85rem;">Full Name *</label>
+                                <input type="text" name="full_name" value="{{ session.get('user_name', '') }}" required placeholder="Recipient name" style="width: 100%; padding: 0.85rem 1rem; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit; font-size: 0.95rem; transition: border-color 0.3s;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#cbd5e1'">
+                            </div>
+                            <div>
+                                <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.4rem; font-size: 0.85rem;">Phone Number *</label>
+                                <input type="tel" name="phone" required placeholder="10-digit mobile" style="width: 100%; padding: 0.85rem 1rem; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit; font-size: 0.95rem; transition: border-color 0.3s;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#cbd5e1'">
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.4rem; font-size: 0.85rem;">Address Line 1 *</label>
+                            <input type="text" name="address_line1" required placeholder="House No., Building, Street" style="width: 100%; padding: 0.85rem 1rem; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit; font-size: 0.95rem; transition: border-color 0.3s;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#cbd5e1'">
+                        </div>
+
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.4rem; font-size: 0.85rem;">Address Line 2 (Optional)</label>
+                            <input type="text" name="address_line2" placeholder="Area, Landmark" style="width: 100%; padding: 0.85rem 1rem; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit; font-size: 0.95rem; transition: border-color 0.3s;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#cbd5e1'">
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                            <div>
+                                <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.4rem; font-size: 0.85rem;">City *</label>
+                                <input type="text" name="city" required placeholder="City" style="width: 100%; padding: 0.85rem 1rem; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit; font-size: 0.95rem; transition: border-color 0.3s;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#cbd5e1'">
+                            </div>
+                            <div>
+                                <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.4rem; font-size: 0.85rem;">State *</label>
+                                <input type="text" name="state" required placeholder="State" style="width: 100%; padding: 0.85rem 1rem; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit; font-size: 0.95rem; transition: border-color 0.3s;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#cbd5e1'">
+                            </div>
+                            <div>
+                                <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.4rem; font-size: 0.85rem;">Pincode *</label>
+                                <input type="text" name="pincode" required placeholder="PIN Code" style="width: 100%; padding: 0.85rem 1rem; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit; font-size: 0.95rem; transition: border-color 0.3s;" onfocus="this.style.borderColor='#6366f1'" onblur="this.style.borderColor='#cbd5e1'">
+                            </div>
+                        </div>
+
+                        <!-- Save Address Checkbox -->
+                        <label style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 2rem; cursor: pointer; font-size: 0.9rem; color: #475569;">
+                            <input type="checkbox" name="save_address" value="1" checked style="accent-color: #6366f1; width: 18px; height: 18px;">
+                            <span><strong>Save this address</strong> for future orders</span>
+                        </label>
+
+                        <button type="submit" class="btn-gradient" style="padding: 1.15rem; font-size: 1.05rem; border-radius: 14px; width: 100%;">
+                            Use this Address & Continue <i class="fas fa-arrow-right" style="margin-left: 0.5rem;"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Step 2: Payment Confirmation -->
+        {% if step == 'payment' %}
+        <div style="flex: 1; min-width: 300px; text-align: center;">
+            <div style="background: white; padding: 3rem; border-radius: 24px; border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+                <div style="width: 80px; height: 80px; background: #eef2ff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem; color: #6366f1;">
+                    <i class="fas fa-shield-alt" style="font-size: 2.5rem;"></i>
+                </div>
+                
+                <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 1rem; color: #1e293b;">Ready to Pay?</h2>
+                <p style="color: #64748b; margin-bottom: 2rem;">Secured payment via Razorpay</p>
+
+                <div style="background: #f8fafc; padding: 1.5rem; border-radius: 16px; margin-bottom: 2rem; text-align: left;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem;">
+                        <span style="color: #64748b;">Payable Amount</span>
+                        <span style="font-weight: 800; color: #6366f1; font-size: 1.25rem;">₹{{ total_amount }}</span>
+                    </div>
+                    <div style="font-size: 0.85rem; color: #94a3b8; border-top: 1px dashed #e2e8f0; padding-top: 0.75rem;">
+                        <i class="fas fa-map-marker-alt"></i> {{ session.checkout_info.address }}
+                    </div>
+                </div>
+
+                <button id="rzp-button1" class="btn-gradient" style="padding: 1.25rem; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 0.75rem; border-radius: 16px;">
+                    <i class="fas fa-lock"></i> Pay ₹{{ total_amount }} Now
+                </button>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Order Summary (Sidebar) -->
+        <div style="width: 300px;">
+            <div style="background: white; padding: 2rem; border-radius: 24px; border: 1px solid #e2e8f0; position: sticky; top: 100px;">
+                <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 1.5rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 1rem;">Order Summary</h3>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                    <span style="color: #64748b;">Subtotal</span>
+                    <span style="font-weight: 700;">₹{{ total_amount }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                    <span style="color: #64748b;">Delivery</span>
+                    <span style="color: #10b981; font-weight: 700;">FREE</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #f1f5f9;">
+                    <span style="font-weight: 800; font-size: 1.2rem;">Total</span>
+                    <span style="font-weight: 800; font-size: 1.2rem; color: #6366f1;">₹{{ total_amount }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Highlight selected address card
+function highlightSelected(radio, id) {
+    // Reset all labels
+    document.querySelectorAll('#addressForm label[id^="addr-label-"]').forEach(function(lbl) {
+        lbl.style.borderColor = '#e2e8f0';
+        lbl.style.background = 'white';
+    });
+    // Highlight selected
+    var label = document.getElementById('addr-label-' + id);
+    if (label) {
+        label.style.borderColor = '#6366f1';
+        label.style.background = '#f5f3ff';
+    }
+}
+
+// Address type label selector
+function selectLabel(type) {
+    ['Home', 'Work', 'Other'].forEach(function(t) {
+        var el = document.getElementById('label-' + t);
+        if (t === type) {
+            el.style.borderColor = '#6366f1';
+            el.style.background = '#f5f3ff';
+            el.style.color = '#6366f1';
+        } else {
+            el.style.borderColor = '#e2e8f0';
+            el.style.background = 'white';
+            el.style.color = '#475569';
+        }
+    });
+}
+// Initialize label styling
+document.addEventListener('DOMContentLoaded', function() { selectLabel('Home'); });
+</script>
+
+{% if step == 'payment' %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var options = {
+        "key": "{{ key_id }}", 
+        "amount": "{{ amount }}", 
+        "currency": "INR",
+        "name": "SmartCart Marketplace",
+        "description": "Payment for your order",
+        "order_id": "{{ order_id }}",
+        "handler": function (response){
+            var form = document.createElement('form');
+            form.method = 'POST';
+            form.action = "{{ url_for('payment_success') }}";
+            
+            var params = {
+                'razorpay_payment_id': response.razorpay_payment_id,
+                'razorpay_order_id': response.razorpay_order_id || "{{ order_id }}",
+                'razorpay_signature': response.razorpay_signature
+            };
+
+            for (var key in params) {
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = key;
+                input.value = params[key];
+                form.appendChild(input);
+            }
+            
+            document.body.appendChild(form);
+            form.submit();
+        },
+        "prefill": {
+            "name": "{{ user_name }}",
+            "email": "{{ user_email }}",
+            "contact": "9392557540"
+        },
+        "theme": { "color": "#6366f1" }
+    };
+    var rzp1 = new Razorpay(options);
+    document.getElementById('rzp-button1').onclick = function(e){
+        rzp1.open();
+        e.preventDefault();
+    }
+</script>
+{% endif %}
+{% endblock %}

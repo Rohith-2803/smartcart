@@ -1,0 +1,120 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Dashboard Analytics{% endblock %}
+
+{% block header %}Dashboard Overview{% endblock %}
+
+{% block content %}
+<div style="padding-bottom: 2rem;">
+    <!-- Stat Cards -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+        <div class="card" style="border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); background: linear-gradient(135deg, #6366f1 0%, #4338ca 100%); color: white;">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div>
+                    <p style="font-size: 0.85rem; font-weight: 600; opacity: 0.8; text-transform: uppercase;">Total Revenue</p>
+                    <h2 style="font-size: 2rem; font-weight: 800; margin-top: 0.5rem;">₹{{ "{:,.2f}".format(total_revenue) }}</h2>
+                </div>
+                <i class="fas fa-indian-rupee-sign" style="font-size: 1.5rem; opacity: 0.5;"></i>
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.8rem; opacity: 0.9;">Total earnings from all orders</p>
+        </div>
+
+        <div class="card" style="border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div>
+                    <p style="font-size: 0.85rem; font-weight: 600; color: #64748b; text-transform: uppercase;">Total Orders</p>
+                    <h2 style="font-size: 2rem; font-weight: 800; margin-top: 0.5rem; color: #1e293b;">{{ total_orders }}</h2>
+                </div>
+                <i class="fas fa-shopping-basket" style="font-size: 1.5rem; color: #6366f1; opacity: 0.2;"></i>
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.8rem; color: #10b981; font-weight: 600;"><i class="fas fa-arrow-up"></i> Lifetime orders</p>
+        </div>
+
+        <div class="card" style="border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div>
+                    <p style="font-size: 0.85rem; font-weight: 600; color: #64748b; text-transform: uppercase;">Today's Sales</p>
+                    <h2 style="font-size: 2rem; font-weight: 800; margin-top: 0.5rem; color: #1e293b;">₹{{ "{:,.2f}".format(today_sales) }}</h2>
+                </div>
+                <i class="fas fa-bolt" style="font-size: 1.5rem; color: #f59e0b; opacity: 0.2;"></i>
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.8rem; color: #64748b;">Daily revenue performance</p>
+        </div>
+
+        <div class="card" style="border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div>
+                    <p style="font-size: 0.85rem; font-weight: 600; color: #64748b; text-transform: uppercase;">Best Seller</p>
+                    <h2 style="font-size: 1.25rem; font-weight: 800; margin-top: 0.5rem; color: #1e293b; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        {{ most_sold.name if most_sold else 'N/A' }}
+                    </h2>
+                </div>
+                <i class="fas fa-crown" style="font-size: 1.5rem; color: #ef4444; opacity: 0.2;"></i>
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.8rem; color: #64748b;">{{ most_sold.sold if most_sold else 0 }} units sold</p>
+        </div>
+    </div>
+
+    <!-- Analytics Graphs -->
+    <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.5rem; margin-top: 2rem;">
+        <!-- Today's Performance (Placeholder for more data) -->
+        <div style="background: white; padding: 2rem; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; color: #1e293b;">Sales Distribution</h3>
+            <div style="height: 300px;">
+                <canvas id="salesDistChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Inventory Summary -->
+        <div style="background: white; padding: 2rem; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1.5rem; color: #1e293b;">Order Status</h3>
+            <div style="height: 300px;">
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Sales Distribution Chart
+    const salesCtx = document.getElementById('salesDistChart').getContext('2d');
+    new Chart(salesCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                label: 'Orders',
+                data: [12, 19, 3, 5, 2, 3, 7],
+                backgroundColor: '#6366f1',
+                borderRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } }
+        }
+    });
+
+    // Status Chart
+    const statusCtx = document.getElementById('statusChart').getContext('2d');
+    new Chart(statusCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Delivered', 'Pending', 'Cancelled'],
+            datasets: [{
+                data: [300, 50, 100],
+                backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%'
+        }
+    });
+</script>
+{% endblock %}

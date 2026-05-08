@@ -1,0 +1,47 @@
+{% extends "superadmin/base.html" %}
+
+{% block title %}All Platform Orders{% endblock %}
+
+{% block content %}
+<div style="padding: 2rem 0;">
+    <h1 style="font-size: 2.25rem; font-weight: 800; color: #1e293b; margin-bottom: 2rem;">Global Order Tracking</h1>
+
+    <div style="background: white; border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #f8fafc; text-align: left;">
+                    <th style="padding: 1rem 1.5rem; font-size: 0.75rem; color: #64748b; text-transform: uppercase;">Order ID</th>
+                    <th style="padding: 1rem 1.5rem; font-size: 0.75rem; color: #64748b; text-transform: uppercase;">Customer</th>
+                    <th style="padding: 1rem 1.5rem; font-size: 0.75rem; color: #64748b; text-transform: uppercase;">Amount</th>
+                    <th style="padding: 1rem 1.5rem; font-size: 0.75rem; color: #64748b; text-transform: uppercase;">Status</th>
+                    <th style="padding: 1rem 1.5rem; font-size: 0.75rem; color: #64748b; text-transform: uppercase;">Payment ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                    <td style="padding: 1.25rem 1.5rem; font-weight: 700; color: #6366f1;">#{{ order.order_id }}</td>
+                    <td style="padding: 1.25rem 1.5rem;">
+                        <p style="font-weight: 600; color: #1e293b; margin-bottom: 0.1rem;">{{ order.user_name }}</p>
+                        <p style="font-size: 0.8rem; color: #64748b;">{{ order.created_at.strftime('%d %b, %H:%M') }}</p>
+                    </td>
+                    <td style="padding: 1.25rem 1.5rem; font-weight: 800; color: #1e293b;">₹{{ order.total_amount }}</td>
+                    <td style="padding: 1.25rem 1.5rem;">
+                        {% set status_bg = '#f1f5f9' %}{% set status_color = '#64748b' %}
+                        {% if order.status == 'Delivered' or order.status == 'Paid' %}{% set status_bg = '#dcfce7' %}{% set status_color = '#16a34a' %}
+                        {% elif order.status == 'Rejected' %}{% set status_bg = '#fee2e2' %}{% set status_color = '#dc2626' %}
+                        {% endif %}
+                        <span style="background: {{ status_bg }}; color: {{ status_color }}; padding: 0.35rem 1rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700;">
+                            {{ order.status }}
+                        </span>
+                    </td>
+                    <td style="padding: 1.25rem 1.5rem; color: #94a3b8; font-family: monospace; font-size: 0.85rem;">
+                        {{ order.payment_id }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

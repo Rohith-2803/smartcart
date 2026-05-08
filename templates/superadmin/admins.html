@@ -1,0 +1,68 @@
+{% extends "superadmin/base.html" %}
+
+{% block title %}Manage Admins{% endblock %}
+
+{% block content %}
+<div style="padding: 2rem 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: #1e293b;">Admin Management</h1>
+        <div style="background: white; padding: 0.5rem 1.5rem; border-radius: 12px; border: 1px solid #e2e8f0; color: #64748b; font-weight: 600;">
+            Total Admins: {{ admins|length }}
+        </div>
+    </div>
+
+    <div style="background: white; border-radius: 20px; border: 1px solid #e2e8f0; overflow: hidden;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #f8fafc; text-align: left;">
+                    <th style="padding: 1rem 1.5rem; font-size: 0.75rem; color: #64748b; text-transform: uppercase;">Admin Profile</th>
+                    <th style="padding: 1rem 1.5rem; font-size: 0.75rem; color: #64748b; text-transform: uppercase;">Registration Date</th>
+                    <th style="padding: 1rem 1.5rem; font-size: 0.75rem; color: #64748b; text-transform: uppercase;">Current Status</th>
+                    <th style="padding: 1rem 1.5rem; font-size: 0.75rem; color: #64748b; text-transform: uppercase; text-align: center;">Management</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for admin in admins %}
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                    <td style="padding: 1.25rem 1.5rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <img src="{{ url_for('static', filename='uploads/admin_profiles/' + admin.profile_image if admin.profile_image else 'default.png') }}" 
+                                 style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid #f1f5f9;">
+                            <div>
+                                <p style="font-weight: 700; color: #1e293b; margin-bottom: 0.1rem;">{{ admin.name }}</p>
+                                <p style="font-size: 0.8rem; color: #64748b;">{{ admin.email }}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="padding: 1.25rem 1.5rem; color: #64748b; font-size: 0.9rem;">
+                        {{ admin.created_at.strftime('%d %b, %Y') }}
+                    </td>
+                    <td style="padding: 1.25rem 1.5rem;">
+                        {% set status_bg = '#f1f5f9' %}{% set status_color = '#64748b' %}
+                        {% if admin.status == 'Approved' %}{% set status_bg = '#dcfce7' %}{% set status_color = '#16a34a' %}
+                        {% elif admin.status == 'Rejected' %}{% set status_bg = '#fee2e2' %}{% set status_color = '#dc2626' %}
+                        {% elif admin.status == 'Pending' %}{% set status_bg = '#fef9c3' %}{% set status_color = '#ca8a04' %}
+                        {% endif %}
+                        <span style="background: {{ status_bg }}; color: {{ status_color }}; padding: 0.35rem 1rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase;">
+                            {{ admin.status }}
+                        </span>
+                    </td>
+                    <td style="padding: 1.25rem 1.5rem; text-align: center;">
+                        <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                            {% if admin.status != 'Approved' %}
+                            <a href="{{ url_for('approve_admin', admin_id=admin.admin_id, action='approve') }}" 
+                               class="btn" style="background: #1e293b; color: white; font-size: 0.75rem; padding: 0.5rem 1rem; border-radius: 8px;">Approve</a>
+                            {% endif %}
+                            {% if admin.status != 'Rejected' %}
+                            <a href="{{ url_for('approve_admin', admin_id=admin.admin_id, action='reject') }}" 
+                               class="btn" style="background: #fff; border: 1px solid #e2e8f0; color: #ef4444; font-size: 0.75rem; padding: 0.5rem 1rem; border-radius: 8px;">Reject</a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

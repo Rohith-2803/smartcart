@@ -1,0 +1,73 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Admin Profile{% endblock %}
+{% block header %}My Profile{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <form action="{{ url_for('admin_profile') }}" method="POST" enctype="multipart/form-data">
+        <div style="display: grid; grid-template-columns: 200px 1fr; gap: 2.5rem; align-items: start;">
+            <!-- Profile Image Section -->
+            <div style="text-align: center;">
+                <div style="position: relative; display: inline-block; margin-bottom: 1rem;">
+                    <img src="{{ url_for('static', filename='uploads/admin_profiles/' + admin.profile_image if admin.profile_image else 'default.png') }}"
+                        style="width: 180px; height: 180px; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: var(--shadow-lg);">
+                </div>
+                <div class="form-group">
+                    <label for="profile_image" class="btn"
+                        style="background: #f1f5f9; color: var(--text-primary); font-size: 0.8rem; cursor: pointer; width: 100%;">
+                        <i class="fas fa-camera mr-1"></i> Change Photo
+                    </label>
+                    <input type="file" id="profile_image" name="profile_image" style="display: none;" accept="image/*">
+                    <p style="font-size: 0.7rem; color: var(--text-secondary); margin-top: 0.5rem;">JPG or PNG, max 2MB
+                    </p>
+                </div>
+            </div>
+
+            <!-- Profile Info Section -->
+            <div>
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" class="form-control" value="{{ admin.name }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control" value="{{ admin.email }}" required>
+                </div>
+
+                <div style="margin: 2rem 0; padding-top: 1rem; border-top: 1px solid #f1f5f9;">
+                    <h3 style="font-size: 1rem; margin-bottom: 1rem;"><i class="fas fa-key"></i> Change Password</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">Leave blank if you
+                        don't want to change it.</p>
+
+                    <div class="form-group">
+                        <label for="new_password">New Password</label>
+                        <input type="password" id="new_password" name="new_password" class="form-control"
+                            placeholder="••••••••">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn"
+                        style="background: #f1f5f9; color: var(--text-primary); width: 100%;">Cancel</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Preview image before upload
+    document.getElementById('profile_image').onchange = function (evt) {
+        const [file] = this.files;
+        if (file) {
+            const img = document.querySelector('img[alt="Profile"]');
+            // We need a specific selector for the profile image in the card
+            const profilePreview = document.querySelector('.card img');
+            profilePreview.src = URL.createObjectURL(file);
+        }
+    }
+</script>
+{% endblock %}

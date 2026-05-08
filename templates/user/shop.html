@@ -1,0 +1,118 @@
+{% extends "user/base.html" %}
+
+{% block title %}Shop - Browse Products{% endblock %}
+
+{% block content %}
+<div style="padding: 2rem 0;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 3rem; flex-wrap: wrap; gap: 1.5rem;">
+        <div>
+            <h1 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 0.5rem;">Explore Products</h1>
+            <p style="color: #64748b;">Find the best deals on your favorite items.</p>
+        </div>
+        
+        <form action="{{ url_for('shop') }}" method="GET" style="display: flex; gap: 0.75rem; flex: 1; max-width: 500px;">
+            <input type="text" name="search" class="form-control" placeholder="Search for products..." value="{{ search_query }}">
+            <button type="submit" class="btn-gradient" style="width: auto;">Search</button>
+        </form>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 250px 1fr; gap: 2.5rem;">
+        <!-- Filters Sidebar -->
+        <aside>
+            <div style="background: white; padding: 1.5rem; border-radius: 16px; border: 1px solid #e2e8f0; position: sticky; top: 100px;">
+                <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 1.25rem;">Categories</h3>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    <a href="{{ url_for('shop') }}" 
+                       style="text-decoration: none; color: {% if not selected_category %}#6366f1{% else %}#64748b{% endif %}; font-weight: {% if not selected_category %}600{% else %}400{% endif %};">
+                        All Products
+                    </a>
+                    {% for category in categories %}
+                    <a href="{{ url_for('shop', category=category, search=search_query) }}" 
+                       style="text-decoration: none; color: {% if selected_category == category %}#6366f1{% else %}#64748b{% endif %}; font-weight: {% if selected_category == category %}600{% else %}400{% endif %};">
+                        {{ category }}
+                    </a>
+                    {% endfor %}
+                </div>
+
+                <div style="margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid #f1f5f9;">
+                    <h3 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 1rem;">Why shop with us?</h3>
+                    <ul style="list-style: none; color: #64748b; font-size: 0.9rem; padding: 0;">
+                        <li style="margin-bottom: 0.75rem;"><i class="fas fa-truck" style="color: #6366f1; margin-right: 0.5rem;"></i> Fast Delivery</li>
+                        <li style="margin-bottom: 0.75rem;"><i class="fas fa-shield-alt" style="color: #6366f1; margin-right: 0.5rem;"></i> Secure Payment</li>
+                        <li><i class="fas fa-undo" style="color: #6366f1; margin-right: 0.5rem;"></i> Easy Returns</li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Product Grid -->
+        <main>
+            {% if products %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem;">
+                {% for product in products %}
+                <div class="card" style="padding: 0; overflow: hidden; transition: transform 0.3s; border: 1px solid #f1f5f9;"
+                    onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+                    <div style="position: relative;">
+                        <a href="{{ url_for('product_details', product_id=product.product_id) }}">
+                            <img src="{{ url_for('static', filename='uploads/product_images/' + product.image if product.image else 'default_product.png') }}"
+                                style="width: 100%; height: 240px; object-fit: cover;">
+                        </a>
+                        <a href="{{ url_for('add_to_wishlist', product_id=product.product_id) }}" 
+                           style="position: absolute; top: 0.75rem; right: 0.75rem; width: 32px; height: 32px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #64748b; text-decoration: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.3s;"
+                           onmouseover="this.style.color='#ef4444'; this.style.transform='scale(1.1)'" onmouseout="this.style.color='#64748b'; this.style.transform='scale(1)'">
+                            <i class="far fa-heart"></i>
+                        </a>
+                    </div>
+                    <div style="padding: 1.25rem;">
+                        <p style="color: #6366f1; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem; letter-spacing: 0.05em;">
+                            {{ product.category }}
+                        </p>
+                        <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; min-height: 2.5rem;">
+                            <a href="{{ url_for('product_details', product_id=product.product_id) }}" style="color: inherit; text-decoration: none;">
+                                {{ product.name }}
+                            </a>
+                        </h3>
+                        <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+                                <span style="font-size: 1.25rem; font-weight: 800; color: #1e293b;">₹{{ product.price }}</span>
+                                {% if product.stock > 0 %}
+                                <span style="font-size: 0.75rem; color: #10b981; font-weight: 700; background: #dcfce7; padding: 0.2rem 0.5rem; border-radius: 6px;">In Stock</span>
+                                {% else %}
+                                <span style="font-size: 0.75rem; color: #ef4444; font-weight: 700; background: #fee2e2; padding: 0.2rem 0.5rem; border-radius: 6px;">Out of Stock</span>
+                                {% endif %}
+                            </div>
+                            {% if product.stock > 0 %}
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                                <a href="{{ url_for('add_to_cart', product_id=product.product_id) }}" class="btn" 
+                                    style="background: #f1f5f9; color: #1e293b; font-size: 0.8rem; font-weight: 700; border-radius: 12px; padding: 0.75rem; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.2s;"
+                                    onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">
+                                    <i class="fas fa-cart-plus"></i> Cart
+                                </a>
+                                <a href="{{ url_for('buy_now', product_id=product.product_id) }}" class="btn-gradient" 
+                                    style="padding: 0.75rem; font-size: 0.8rem; font-weight: 700; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                    <i class="fas fa-bolt"></i> Buy Now
+                                </a>
+                            </div>
+                            {% else %}
+                            <div style="text-align: center; padding: 0.75rem; background: #f8fafc; border-radius: 12px; color: #94a3b8; font-weight: 600; font-size: 0.85rem;">
+                                Currently Unavailable
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div style="text-align: center; padding: 5rem 0;">
+                <div style="font-size: 4rem; color: #cbd5e1; margin-bottom: 1.5rem;">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h2 style="font-size: 1.5rem; color: #64748b;">No products found match your search.</h2>
+                <a href="{{ url_for('shop') }}" style="color: #6366f1; text-decoration: none; font-weight: 600; display: inline-block; margin-top: 1rem;">Clear all filters</a>
+            </div>
+            {% endif %}
+        </main>
+    </div>
+</div>
+{% endblock %}

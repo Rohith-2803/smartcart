@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCart Admin - {% block title %}{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body style="display: flex; flex-direction: column; min-height: 100vh;">
+    <nav class="admin-navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('admin_dashboard') }}" class="sidebar-brand" style="margin-bottom: 0;">
+                <i class="fas fa-shopping-cart"></i> SmartCart
+            </a>
+
+            <div class="nav-menu">
+                <a href="{{ url_for('admin_dashboard') }}"
+                    class="nav-item {% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+                <a href="{{ url_for('admin_orders') }}"
+                    class="nav-item {% if request.endpoint == 'admin_orders' %}active{% endif %}">
+                    <i class="fas fa-box-archive"></i> Orders
+                </a>
+                <a href="{{ url_for('item_list') }}"
+                    class="nav-item {% if request.endpoint == 'item_list' %}active{% endif %}">
+                    <i class="fas fa-box-open"></i> Products
+                </a>
+                <a href="{{ url_for('add_item') }}"
+                    class="nav-item {% if request.endpoint == 'add_item' %}active{% endif %}">
+                    <i class="fas fa-plus-circle"></i> Add New Product
+                </a>
+                <a href="{{ url_for('admin_profile') }}"
+                    class="nav-item {% if request.endpoint == 'admin_profile' %}active{% endif %}">
+                    <i class="fas fa-user-circle"></i> Profile
+                </a>
+            </div>
+
+            <div class="user-profile">
+                <div style="text-align: right; margin-right: 1rem;">
+                    <p style="font-weight: 600; font-size: 0.85rem;">{{ session.get('admin_name', 'Admin') }}</p>
+                    <a href="{{ url_for('admin_logout') }}"
+                        style="color: var(--danger); font-size: 0.75rem; text-decoration: none; font-weight: 600;">Logout</a>
+                </div>
+                <img src="{{ url_for('static', filename='uploads/admin_profiles/' + session.get('profile_image', 'default.png')) }}"
+                    alt="Profile" class="avatar">
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <div class="container" style="flex: 1; display: flex; flex-direction: column; width: 100%; padding-bottom: 0;">
+        <main class="main-content" style="flex: 1;">
+            <header>
+                <h1 style="font-size: 1.5rem; font-weight: 700;">{% block header %}{% endblock %}</h1>
+            </header>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer
+            style="padding: 1rem 0; border-top: 1px solid #e2e8f0; text-align: center; color: var(--text-secondary); font-size: 0.85rem; margin-top: auto;">
+            <p style="margin: 0;">&copy; 2026 SmartCart. All rights reserved | Developed by <strong>Rohith</strong></p>
+        </footer>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    alert.style.transition = "opacity 0.5s ease";
+                    alert.style.opacity = "0";
+                    setTimeout(() => alert.remove(), 500);
+                }, 5000);
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,54 @@
+{% extends "user/base.html" %}
+
+{% block title %}My Wishlist{% endblock %}
+
+{% block content %}
+<div style="padding: 3rem 0;">
+    <div style="margin-bottom: 3rem;">
+        <h1 style="font-size: 2.25rem; font-weight: 800; color: #1e293b;">My Wishlist</h1>
+        <p style="color: #64748b;">Save items you love for later.</p>
+    </div>
+
+    {% if products %}
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2rem;">
+        {% for product in products %}
+        <div class="card" style="padding: 0; overflow: hidden; border: 1px solid #f1f5f9; position: relative;">
+            <a href="{{ url_for('remove_from_wishlist', product_id=product.product_id) }}" 
+               style="position: absolute; top: 1rem; right: 1rem; width: 36px; height: 36px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #ef4444; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); z-index: 10; text-decoration: none;">
+                <i class="fas fa-trash-alt"></i>
+            </a>
+            
+            <a href="{{ url_for('product_details', product_id=product.product_id) }}" style="text-decoration: none; color: inherit;">
+                <img src="{{ url_for('static', filename='uploads/product_images/' + product.image if product.image else 'default_product.png') }}"
+                    style="width: 100%; height: 260px; object-fit: cover;">
+                
+                <div style="padding: 1.5rem;">
+                    <span style="font-size: 0.7rem; color: #6366f1; font-weight: 700; text-transform: uppercase;">{{ product.category }}</span>
+                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-top: 0.5rem; margin-bottom: 1rem;">{{ product.name }}</h3>
+                    <div style="font-size: 1.25rem; font-weight: 800; color: #1e293b; margin-bottom: 1.5rem;">₹{{ product.price }}</div>
+                </div>
+            </a>
+            
+            <div style="padding: 0 1.5rem 1.5rem; display: flex; gap: 1rem;">
+                <a href="{{ url_for('buy_now', product_id=product.product_id) }}" class="btn-gradient" style="flex: 2; padding: 0.75rem; font-size: 0.9rem; text-align: center;">
+                    Buy Now
+                </a>
+                <a href="{{ url_for('add_to_cart', product_id=product.product_id) }}" class="btn" style="flex: 1; background: #f8fafc; color: #1e293b; padding: 0.75rem; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-decoration: none; border: 1px solid #e2e8f0;">
+                    <i class="fas fa-cart-plus"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 6rem 0;">
+        <div style="font-size: 5rem; color: #f1f5f9; margin-bottom: 2rem;">
+            <i class="fas fa-heart"></i>
+        </div>
+        <h2 style="font-size: 1.75rem; color: #64748b; font-weight: 700;">Your wishlist is empty</h2>
+        <p style="color: #94a3b8; margin-bottom: 2.5rem;">Explore our shop and save your favorite items here.</p>
+        <a href="{{ url_for('shop') }}" class="btn-gradient" style="width: auto; padding: 1rem 2.5rem;">Continue Shopping</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "user/base.html" %}
+
+{% block title %}Verify OTP{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <h1 style="font-size: 1.875rem; font-weight: 700; margin-bottom: 0.5rem;"><i class="fas fa-key"></i> OTP Verification</h1>
+        <p style="color: #64748b;">Enter the 6-digit code sent to your email.</p>
+    </div>
+
+    <form action="{{ url_for('verify_otp') }}" method="POST">
+        <div class="form-group" style="margin-bottom: 2rem;">
+            <input type="text" id="otp" name="otp" class="form-control" placeholder="000000"
+                style="text-align: center; font-size: 1.5rem; letter-spacing: 0.5rem; font-weight: 700; width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 10px;"
+                maxlength="6" required>
+        </div>
+        <button type="submit" class="btn-gradient">Verify OTP</button>
+    </form>
+
+    <div style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem;">
+        <p style="color: #64748b;">Didn't receive code? <a href="#" style="color: #6366f1; font-weight: 600; text-decoration: none;">Resend OTP</a></p>
+    </div>
+</div>
+{% endblock %}

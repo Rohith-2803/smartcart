@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCart Super Admin - {% block title %}{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-navbar .nav-item {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        .admin-navbar .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: #fff !important;
+        }
+
+        .admin-navbar .nav-item.active {
+            background: #6366f1 !important;
+            color: #fff !important;
+        }
+
+        .admin-navbar .nav-item i {
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+
+<body style="display: flex; flex-direction: column; min-height: 100vh; background: #f8fafc;">
+    <nav class="admin-navbar" style="background: #0f172a; border-bottom: 1px solid rgba(255,255,255,0.1); box-shadow: none;">
+        <div class="nav-container">
+            <a href="{{ url_for('superadmin_dashboard') }}" class="sidebar-brand" style="margin-bottom: 0; color: #fff;">
+                <i class="fas fa-shield-halved" style="color: #6366f1;"></i> Super Admin
+            </a>
+
+            <div class="nav-menu">
+                <a href="{{ url_for('superadmin_dashboard') }}"
+                    class="nav-item {% if request.endpoint == 'superadmin_dashboard' %}active{% endif %}">
+                    <i class="fas fa-chart-line"></i> Global Dashboard
+                </a>
+                <a href="{{ url_for('superadmin_admins') }}"
+                    class="nav-item {% if request.endpoint == 'superadmin_admins' %}active{% endif %}">
+                    <i class="fas fa-users-gear"></i> Manage Admins
+                </a>
+                <a href="{{ url_for('superadmin_products') }}"
+                    class="nav-item {% if request.endpoint == 'superadmin_products' %}active{% endif %}">
+                    <i class="fas fa-boxes-stacked"></i> All Products
+                </a>
+                <a href="{{ url_for('superadmin_orders') }}"
+                    class="nav-item {% if request.endpoint == 'superadmin_orders' %}active{% endif %}">
+                    <i class="fas fa-receipt"></i> Global Orders
+                </a>
+                <a href="{{ url_for('superadmin_revenue') }}"
+                    class="nav-item {% if request.endpoint == 'superadmin_revenue' %}active{% endif %}">
+                    <i class="fas fa-sack-dollar"></i> Revenue
+                </a>
+            </div>
+
+            <div class="user-profile">
+                <div style="text-align: right; margin-right: 1rem;">
+                    <p style="font-weight: 600; font-size: 0.85rem; color: #fff; margin-bottom: 0.1rem;">{{ session.get('admin_name', 'Super Admin') }}</p>
+                    <div style="display: flex; gap: 0.75rem; justify-content: flex-end; align-items: center;">
+                        <a href="{{ url_for('superadmin_profile') }}"
+                            style="color: #6366f1; font-size: 0.75rem; text-decoration: none; font-weight: 600;">Profile</a>
+                        <span style="color: rgba(255,255,255,0.2); font-size: 0.75rem;">|</span>
+                        <a href="{{ url_for('admin_logout') }}"
+                            style="color: #ef4444; font-size: 0.75rem; text-decoration: none; font-weight: 600;">Logout</a>
+                    </div>
+                </div>
+                <a href="{{ url_for('superadmin_profile') }}">
+                    <img src="{{ url_for('static', filename='uploads/admin_profiles/' + session.get('profile_image', 'default.png')) }}"
+                        alt="Profile" class="avatar" style="border: 2px solid #6366f1; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="flex: 1; display: flex; flex-direction: column; width: 100%; padding-bottom: 0;">
+        <main class="main-content" style="flex: 1;">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" style="border-radius: 12px; margin-bottom: 2rem;">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer style="padding: 1.5rem 0; border-top: 1px solid #e2e8f0; text-align: center; color: #64748b; font-size: 0.85rem; margin-top: auto;">
+            <p style="margin: 0;">&copy; 2026 SmartCart Enterprise | Super Admin Portal</p>
+        </footer>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    alert.style.transition = "opacity 0.5s ease";
+                    alert.style.opacity = "0";
+                    setTimeout(() => alert.remove(), 500);
+                }, 5000);
+            });
+        });
+    </script>
+</body>
+</html>
