@@ -35,7 +35,7 @@
                         </div>
                     </td>
                     <td style="padding: 1.25rem 1.5rem; color: #64748b; font-size: 0.9rem;">
-                        {{ admin.created_at.strftime('%d %b, %Y') }}
+                        {{ admin.created_at | strftime('%d %b, %Y') }}
                     </td>
                     <td style="padding: 1.25rem 1.5rem;">
                         {% set status_bg = '#f1f5f9' %}{% set status_color = '#64748b' %}

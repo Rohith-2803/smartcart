@@ -1,5 +1,0 @@
-flask
-mysql-connector-python
-flask-mail
-flask-bcrypt
-python-dotenv

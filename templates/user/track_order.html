@@ -3,85 +3,118 @@
 {% block title %}Track Order #{{ order.order_id }}{% endblock %}
 
 {% block content %}
-<div style="padding: 3rem 0;">
-    <div style="margin-bottom: 3rem;">
-        <a href="{{ url_for('my_orders') }}" style="color: #64748b; text-decoration: none; font-size: 0.9rem;">
-            <i class="fas fa-arrow-left"></i> Back to My Orders
+<div class="py-5">
+    <div class="mb-5">
+        <a href="{{ url_for('my_orders') }}" class="text-decoration-none text-muted small fw-bold">
+            <i class="fas fa-arrow-left me-1"></i> Back to My Orders
         </a>
-        <h1 style="font-size: 2.25rem; font-weight: 800; margin-top: 1rem; color: #1e293b;">Track Order</h1>
-        <p style="color: #64748b;">Order #{{ order.order_id }} • Placed on {{ order.created_at.strftime('%d %b, %Y') }}</p>
+        <h1 class="display-6 fw-bold text-dark mt-2 mb-1">Track Order</h1>
+        <p class="text-muted">Order #{{ order.order_id }} • Placed on {{ order.created_at | strftime('%d %b, %Y') }}</p>
     </div>
 
     <!-- Progress Tracker -->
-    <div style="background: white; padding: 4rem 2rem; border-radius: 24px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0; margin-bottom: 3rem;">
-        {% set status_steps = ['Pending', 'Confirmed', 'Packed', 'Shipped', 'Delivered'] %}
-        {% set current_index = status_steps.index(order.status) if order.status in status_steps else 0 %}
-        
-        <div style="display: flex; justify-content: space-between; position: relative;">
-            <!-- Connector Line -->
-            <div style="position: absolute; top: 25px; left: 5%; right: 5%; height: 4px; background: #f1f5f9; z-index: 1;">
-                <div style="height: 100%; background: #6366f1; width: {{ (current_index / (status_steps|length - 1)) * 100 }}%; transition: width 1s ease-in-out;"></div>
-            </div>
-
-            {% for step in status_steps %}
-            <div style="display: flex; flex-direction: column; align-items: center; z-index: 2; width: 15%;">
-                {% set is_completed = loop.index0 <= current_index %}
-                {% set is_active = loop.index0 == current_index %}
-                
-                <div style="width: 50px; height: 50px; border-radius: 50%; background: {% if is_completed %}#6366f1{% else %}#fff{% endif %}; border: 4px solid {% if is_completed %}#6366f1{% else %}#f1f5f9{% endif %}; display: flex; align-items: center; justify-content: center; color: {% if is_completed %}#fff{% else %}#cbd5e1{% endif %}; margin-bottom: 1rem; transition: all 0.3s;">
-                    <i class="fas {% if step == 'Pending' %}fa-clock{% elif step == 'Confirmed' %}fa-check{% elif step == 'Packed' %}fa-box{% elif step == 'Shipped' %}fa-truck{% else %}fa-house-circle-check{% endif %}"></i>
-                </div>
-                
-                <p style="font-size: 0.85rem; font-weight: {% if is_active %}800{% elif is_completed %}600{% else %}500{% endif %}; color: {% if is_active %}#1e293b{% elif is_completed %}#6366f1{% else %}#94a3b8{% endif %}; text-align: center;">
-                    {{ step }}
-                </p>
-                
-                {% if is_active %}
-                <span style="font-size: 0.7rem; color: #10b981; font-weight: 700; margin-top: 0.25rem; text-transform: uppercase;">Current Status</span>
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-
-    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
-        <!-- Order Items -->
-        <div style="background: white; padding: 2rem; border-radius: 24px; border: 1px solid #e2e8f0;">
-            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 2rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 1rem;">Items in this order</h3>
-            {% for item in items %}
-            <div style="display: flex; gap: 1.5rem; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #f8fafc;">
-                <img src="{{ url_for('static', filename='uploads/product_images/' + item.image if item.image else 'default_product.png') }}"
-                    style="width: 80px; height: 80px; border-radius: 12px; object-fit: cover; border: 1px solid #f1f5f9;">
-                <div style="flex: 1;">
-                    <p style="font-weight: 700; color: #1e293b; font-size: 1.1rem; margin-bottom: 0.25rem;">{{ item.name }}</p>
-                    <p style="color: #64748b; font-size: 0.9rem;">Quantity: {{ item.quantity }} • Price: ₹{{ item.price }}</p>
-                </div>
-                <p style="font-weight: 800; color: #1e293b; font-size: 1.1rem;">₹{{ item.quantity * item.price }}</p>
-            </div>
-            {% endfor %}
-            <div style="display: flex; justify-content: space-between; margin-top: 1rem; padding-top: 1rem;">
-                <span style="font-weight: 700; color: #64748b;">Subtotal Paid</span>
-                <span style="font-weight: 800; font-size: 1.25rem; color: #6366f1;">₹{{ order.total_amount }}</span>
-            </div>
-        </div>
-
-        <!-- Shipping Info -->
-        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-            <div style="background: #f8fafc; padding: 2rem; border-radius: 24px; border: 1px solid #e2e8f0;">
-                <h3 style="font-size: 1rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem;">Delivery Address</h3>
-                <p style="font-weight: 600; color: #1e293b; line-height: 1.6; margin-bottom: 1rem;">{{ order.shipping_address }}</p>
-                <p style="color: #64748b; font-size: 0.9rem;"><i class="fas fa-phone-alt" style="margin-right: 0.5rem;"></i> {{ order.phone }}</p>
-            </div>
+    <div class="card border-0 shadow-sm rounded-4 mb-5">
+        <div class="card-body p-4 p-md-5">
+            {% set status_steps = ['Pending', 'Confirmed', 'Packed', 'Shipped', 'Delivered'] %}
+            {% set current_index = status_steps.index(order.status) if order.status in status_steps else 0 %}
             
-            <div style="background: #eef2ff; padding: 2rem; border-radius: 24px; border: 1px solid #e0e7ff;">
-                <h3 style="font-size: 1rem; font-weight: 700; color: #6366f1; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem;">Payment Verified</h3>
-                <p style="font-size: 0.85rem; color: #4338ca;">Transaction ID: <br><strong>{{ order.payment_id }}</strong></p>
-                <div style="margin-top: 1.5rem; background: white; padding: 1rem; border-radius: 12px; display: flex; align-items: center; gap: 0.75rem;">
-                    <i class="fas fa-shield-check" style="color: #10b981; font-size: 1.25rem;"></i>
-                    <span style="font-weight: 700; font-size: 0.85rem; color: #1e293b;">100% Secure Payment</span>
+            <div class="position-relative mb-5 d-none d-md-block">
+                <div class="progress" style="height: 4px; position: absolute; top: 25px; left: 5%; right: 5%; z-index: 0;">
+                    <div class="progress-bar bg-primary" role="progressbar" style="width: {{ (current_index / (status_steps|length - 1)) * 100 }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+
+                <div class="d-flex justify-content-between position-relative z-1">
+                    {% for step in status_steps %}
+                    {% set is_completed = loop.index0 <= current_index %}
+                    {% set is_active = loop.index0 == current_index %}
+                    <div class="text-center" style="width: 15%;">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center border-4 {% if is_completed %}bg-primary border-primary text-white{% else %}bg-white border-light text-muted{% endif %} mb-3 shadow-sm transition-all" style="width: 54px; height: 54px;">
+                            <i class="fas {% if step == 'Pending' %}fa-clock{% elif step == 'Confirmed' %}fa-check{% elif step == 'Packed' %}fa-box{% elif step == 'Shipped' %}fa-truck{% else %}fa-house-circle-check{% endif %}"></i>
+                        </div>
+                        <p class="small fw-bold mb-0 {% if is_active %}text-dark{% elif is_completed %}text-primary{% else %}text-muted{% endif %}">{{ step }}</p>
+                        {% if is_active %}
+                        <span class="badge bg-success-subtle text-success px-2 py-1 rounded-pill mt-1" style="font-size: 0.6rem;">Current</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Mobile Vertical Tracker -->
+            <div class="d-md-none">
+                <div class="d-flex flex-column gap-4">
+                    {% for step in status_steps %}
+                    {% set is_completed = loop.index0 <= current_index %}
+                    {% set is_active = loop.index0 == current_index %}
+                    <div class="d-flex gap-3 align-items-center">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center {% if is_completed %}bg-primary text-white{% else %}bg-light text-muted{% endif %}" style="width: 40px; height: 40px; flex-shrink: 0;">
+                            <i class="fas {% if step == 'Pending' %}fa-clock{% elif step == 'Confirmed' %}fa-check{% elif step == 'Packed' %}fa-box{% elif step == 'Shipped' %}fa-truck{% else %}fa-house-circle-check{% endif %} small"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <p class="mb-0 fw-bold {% if is_active %}text-dark{% elif is_completed %}text-primary{% else %}text-muted{% endif %}">{{ step }}</p>
+                            {% if is_active %}
+                            <span class="badge bg-success-subtle text-success rounded-pill px-2" style="font-size: 0.6rem;">Current Status</span>
+                            {% endif %}
+                        </div>
+                        {% if is_completed and not is_active %}
+                        <i class="fas fa-check-circle text-success"></i>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="row g-4">
+        <!-- Order Items -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <h3 class="h5 fw-bold text-dark mb-4 pb-3 border-bottom">Items in this order</h3>
+                    {% for item in items %}
+                    <div class="d-flex align-items-center gap-4 {% if not loop.last %}mb-4 pb-4 border-bottom border-light{% endif %}">
+                        <img src="{{ url_for('static', filename='uploads/product_images/' + item.image if item.image else 'default_product.png') }}"
+                            class="rounded-3 border shadow-sm" style="width: 70px; height: 70px; object-fit: cover;">
+                        <div class="flex-grow-1">
+                            <p class="fw-bold text-dark mb-1">{{ item.name }}</p>
+                            <p class="text-muted small mb-0">Qty: {{ item.quantity }} • ₹{{ item.price }}</p>
+                        </div>
+                        <p class="fw-bold text-dark mb-0 fs-5">₹{{ item.quantity * item.price }}</p>
+                    </div>
+                    {% endfor %}
+                    <div class="d-flex justify-content-between align-items-center mt-4 pt-2">
+                        <span class="text-muted fw-bold">Total Amount Paid</span>
+                        <span class="h4 fw-bold text-primary mb-0">₹{{ order.total_amount }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Shipping & Payment Info -->
+        <div class="col-lg-4">
+            <div class="d-flex flex-column gap-4">
+                <div class="card border-0 shadow-sm rounded-4 bg-light">
+                    <div class="card-body p-4">
+                        <h4 class="h6 fw-bold text-uppercase text-muted mb-3">Delivery Address</h4>
+                        <p class="text-dark fw-bold mb-3 lh-sm">{{ order.shipping_address }}</p>
+                        <p class="text-muted small mb-0"><i class="fas fa-phone-alt me-2"></i>{{ order.phone }}</p>
+                    </div>
+                </div>
+                
+                <div class="card border-0 shadow-sm rounded-4 bg-primary bg-opacity-10 border border-primary border-opacity-10">
+                    <div class="card-body p-4">
+                        <h4 class="h6 fw-bold text-uppercase text-primary mb-3">Payment Details</h4>
+                        <p class="small text-dark mb-3">Transaction ID:<br><span class="fw-bold text-break">{{ order.payment_id }}</span></p>
+                        <div class="bg-white rounded-3 p-3 d-flex align-items-center gap-2 border shadow-sm">
+                            <i class="fas fa-shield-check text-success fs-5"></i>
+                            <span class="fw-bold small text-dark">Verified & Secure</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </div>
 {% endblock %}

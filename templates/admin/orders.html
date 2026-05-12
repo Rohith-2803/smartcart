@@ -31,7 +31,7 @@
                         <div style="font-weight: 600; color: #1e293b;">{{ order.user_name }}</div>
                         <div style="font-size: 0.8rem; color: #94a3b8;">{{ order.user_email }}</div>
                     </td>
-                    <td style="padding: 1.25rem; color: #64748b;">{{ order.created_at.strftime('%d %b, %Y') }}</td>
+                    <td style="padding: 1.25rem; color: #64748b;">{{ order.created_at | strftime('%d %b, %Y') }}</td>
                     <td style="padding: 1.25rem; font-weight: 700; color: #1e293b;">₹{{ order.total_amount }}</td>
                     <td style="padding: 1.25rem;">
                         {% set status_color = '#6366f1' %}

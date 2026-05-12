@@ -3,59 +3,63 @@
 {% block title %}My Orders - SmartCart{% endblock %}
 
 {% block content %}
-<div style="padding: 3rem 0;">
-    <h1 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 2.5rem;">My Order History</h1>
+<div class="py-5">
+    <h1 class="display-6 fw-bold mb-5 text-dark">Order History</h1>
 
     {% if orders %}
-    <div style="display: flex; flex-direction: column; gap: 2rem;">
+    <div class="d-flex flex-column gap-4">
         {% for order in orders %}
-        <div class="card" style="padding: 0; overflow: hidden; border: 1px solid #e2e8f0;">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
             <!-- Order Header -->
-            <div style="background: #f8fafc; padding: 1.25rem 2rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                <div style="display: flex; gap: 3rem;">
-                    <div>
-                        <p style="font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Order Placed</p>
-                        <p style="font-weight: 600; color: #1e293b;">{{ order.created_at.strftime('%d %b, %Y') }}</p>
+            <div class="card-header bg-light border-0 p-4">
+                <div class="row g-4 align-items-center">
+                    <div class="col-6 col-md-3">
+                        <p class="text-muted small text-uppercase fw-bold mb-1">Order Placed</p>
+                        <p class="fw-bold mb-0 text-dark">{{ order.created_at | strftime('%d %b, %Y') }}</p>
                     </div>
-                    <div>
-                        <p style="font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Total</p>
-                        <p style="font-weight: 600; color: #1e293b;">₹{{ order.total_amount }}</p>
+                    <div class="col-6 col-md-2">
+                        <p class="text-muted small text-uppercase fw-bold mb-1">Total</p>
+                        <p class="fw-bold mb-0 text-dark">₹{{ order.total_amount }}</p>
                     </div>
-                    <div>
-                        <p style="font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Status</p>
-                        <p style="background: #d1fae5; color: #065f46; padding: 0.2rem 0.75rem; border-radius: 99px; font-size: 0.8rem; font-weight: 700; display: inline-block;">{{ order.status }}</p>
+                    <div class="col-6 col-md-2">
+                        <p class="text-muted small text-uppercase fw-bold mb-1">Status</p>
+                        <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-bold text-uppercase" style="font-size: 0.7rem;">
+                            {{ order.status }}
+                        </span>
                     </div>
-                </div>
-                <div style="display: flex; gap: 1.5rem; align-items: center;">
-                    <div style="text-align: right;">
-                        <p style="font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: 700; margin-bottom: 0.25rem;">Order #{{ order.order_id }}</p>
-                        <p style="font-size: 0.85rem; color: #6366f1; font-weight: 600;">Payment ID: {{ order.payment_id }}</p>
-                    </div>
-                    <div style="display: flex; gap: 1rem;">
-                        <a href="{{ url_for('track_order', order_id=order.order_id) }}" class="btn" style="background: #fff7ed; color: #ea580c; width: auto; padding: 0.5rem 1.25rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; text-decoration: none;">
-                            <i class="fas fa-truck-fast"></i> Track
-                        </a>
-                        <a href="{{ url_for('download_invoice', order_id=order.order_id) }}" class="btn" style="background: #f1f5f9; color: #475569; width: auto; padding: 0.5rem 1.25rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600; text-decoration: none;">
-                            <i class="fas fa-file-pdf"></i> Invoice
-                        </a>
+                    <div class="col-12 col-md-5 text-md-end">
+                        <div class="d-flex flex-column flex-sm-row justify-content-md-end gap-2 align-items-md-center">
+                            <div class="text-md-end me-md-3 mb-2 mb-sm-0">
+                                <p class="text-muted small text-uppercase fw-bold mb-0">Order #{{ order.order_id }}</p>
+                                <p class="text-primary small fw-bold mb-0">Payment: {{ order.payment_id[:12] }}...</p>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('track_order', order_id=order.order_id) }}" class="btn btn-warning btn-sm bg-opacity-10 fw-bold px-3 py-2 rounded-3 text-warning-emphasis">
+                                    <i class="fas fa-truck-fast me-1"></i> Track
+                                </a>
+                                <a href="{{ url_for('download_invoice', order_id=order.order_id) }}" class="btn btn-light btn-sm fw-bold px-3 py-2 rounded-3 border">
+                                    <i class="fas fa-file-pdf me-1"></i> Invoice
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!-- Order Items -->
-            <div style="padding: 2rem;">
+            <div class="card-body p-4">
                 {% for item in order.order_items %}
-                <div style="display: flex; gap: 1.5rem; align-items: center; margin-bottom: {% if not loop.last %}1.5rem{% else %}0{% endif %}; padding-bottom: {% if not loop.last %}1.5rem{% else %}0{% endif %}; border-bottom: {% if not loop.last %}1px solid #f1f5f9{% else %}none{% endif %};">
+                <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-4 {% if not loop.last %}mb-4 pb-4 border-bottom{% endif %}">
                     <img src="{{ url_for('static', filename='uploads/product_images/' + item.image if item.image else 'default_product.png') }}"
-                        style="width: 80px; height: 80px; border-radius: 12px; object-fit: cover; border: 1px solid #f1f5f9;">
+                        class="rounded-3 border shadow-sm" style="width: 80px; height: 80px; object-fit: cover;">
                     
-                    <div style="flex: 1;">
-                        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem;">{{ item.name }}</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">Quantity: {{ item.quantity }}</p>
+                    <div class="flex-grow-1">
+                        <h3 class="h6 fw-bold mb-1">{{ item.name }}</h3>
+                        <p class="text-muted small mb-0">Quantity: {{ item.quantity }}</p>
                     </div>
 
-                    <div style="text-align: right;">
-                        <p style="font-weight: 700; color: #1e293b;">₹{{ item.price }}</p>
+                    <div class="text-sm-end">
+                        <p class="fw-bold text-dark mb-0 fs-5">₹{{ item.price }}</p>
                     </div>
                 </div>
                 {% endfor %}
@@ -64,13 +68,13 @@
         {% endfor %}
     </div>
     {% else %}
-    <div style="text-align: center; padding: 5rem 0; background: white; border-radius: 24px; border: 1px dashed #cbd5e1;">
-        <div style="font-size: 4rem; color: #e2e8f0; margin-bottom: 1.5rem;">
+    <div class="text-center py-5 bg-white border border-dashed rounded-4">
+        <div class="display-1 text-light mb-4">
             <i class="fas fa-box-open"></i>
         </div>
-        <h2 style="font-size: 1.5rem; font-weight: 800; color: #1e293b; margin-bottom: 1rem;">No orders yet</h2>
-        <p style="color: #64748b; margin-bottom: 2rem;">You haven't placed any orders yet. Start shopping to see them here!</p>
-        <a href="{{ url_for('shop') }}" class="btn-gradient" style="width: auto; padding: 0.75rem 2rem;">Browse Products</a>
+        <h2 class="h4 fw-bold text-dark mb-3">No orders yet</h2>
+        <p class="text-muted mb-4">You haven't placed any orders yet. Start shopping to see them here!</p>
+        <a href="{{ url_for('shop') }}" class="btn btn-primary bg-gradient px-4 py-2 rounded-pill fw-bold">Browse Products</a>
     </div>
     {% endif %}
 </div>

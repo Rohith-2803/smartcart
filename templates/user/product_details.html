@@ -3,96 +3,95 @@
 {% block title %}{{ product.name }} - SmartCart{% endblock %}
 
 {% block content %}
-<div style="padding: 3rem 0;">
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start;">
+<div class="py-5">
+    <div class="row g-5 align-items-start">
         <!-- Product Image -->
-        <div style="background: white; border-radius: 24px; padding: 2rem; border: 1px solid #f1f5f9; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
-            <img src="{{ url_for('static', filename='uploads/product_images/' + product.image if product.image else 'default_product.png') }}"
-                style="width: 100%; border-radius: 16px; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden p-3 bg-white">
+                <img src="{{ url_for('static', filename='uploads/product_images/' + product.image if product.image else 'default_product.png') }}"
+                    class="img-fluid rounded-4 transition-zoom" alt="{{ product.name }}">
+            </div>
         </div>
 
         <!-- Product Info -->
-        <div>
-            <nav style="margin-bottom: 2rem; font-size: 0.9rem; color: #94a3b8;">
-                <a href="{{ url_for('shop') }}" style="color: inherit; text-decoration: none;">Shop</a>
-                <span style="margin: 0 0.5rem;">/</span>
-                <a href="{{ url_for('shop', category=product.category) }}" style="color: inherit; text-decoration: none;">{{ product.category }}</a>
-                <span style="margin: 0 0.5rem;">/</span>
-                <span style="color: #64748b; font-weight: 500;">{{ product.name }}</span>
+        <div class="col-lg-6">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{{ url_for('shop') }}" class="text-decoration-none text-muted">Shop</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url_for('shop', category=product.category) }}" class="text-decoration-none text-muted">{{ product.category }}</a></li>
+                    <li class="breadcrumb-item active fw-bold text-dark" aria-current="page">{{ product.name }}</li>
+                </ol>
             </nav>
 
-            <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; color: #1e293b;">{{ product.name }}</h1>
+            <h1 class="display-5 fw-bold text-dark mb-3">{{ product.name }}</h1>
             
-            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
-                <p style="background: #eef2ff; color: #6366f1; display: inline-block; padding: 0.35rem 1rem; border-radius: 99px; font-size: 0.85rem; font-weight: 700; text-transform: uppercase;">
+            <div class="d-flex flex-wrap align-items-center gap-3 mb-4">
+                <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill fw-bold text-uppercase small">
                     {{ product.category }}
-                </p>
-                <div style="color: #f59e0b; font-size: 0.9rem;">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                    <span style="color: #94a3b8; margin-left: 0.5rem;">(4.5/5 Rating)</span>
+                </span>
+                <div class="text-warning d-flex align-items-center">
+                    <i class="fas fa-star small"></i>
+                    <i class="fas fa-star small"></i>
+                    <i class="fas fa-star small"></i>
+                    <i class="fas fa-star small"></i>
+                    <i class="fas fa-star-half-alt small"></i>
+                    <span class="text-muted ms-2 small">(4.5/5 Rating)</span>
                 </div>
             </div>
 
-            <div style="margin-bottom: 2.5rem;">
-                <h3 style="font-size: 2rem; font-weight: 800; color: #1e293b; margin-bottom: 0.5rem;">₹{{ product.price }}</h3>
+            <div class="mb-4">
+                <h2 class="display-6 fw-bold text-primary mb-1">₹{{ product.price }}</h2>
                 {% if product.stock > 0 %}
-                <p style="color: #10b981; font-weight: 600; font-size: 0.95rem;"><i class="fas fa-check-circle"></i> In Stock — {{ product.stock }} units available</p>
+                <p class="text-success fw-bold small mb-0"><i class="fas fa-check-circle me-1"></i> In Stock — {{ product.stock }} units left</p>
                 {% else %}
-                <p style="color: #ef4444; font-weight: 600; font-size: 0.95rem;"><i class="fas fa-times-circle"></i> Out of Stock — Check back later</p>
+                <p class="text-danger fw-bold small mb-0"><i class="fas fa-times-circle me-1"></i> Out of Stock — Back soon!</p>
                 {% endif %}
             </div>
 
-            <div style="margin-bottom: 3rem;">
-                <h4 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 1rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.5rem;">Description</h4>
-                <p style="color: #64748b; line-height: 1.8;">{{ product.description }}</p>
+            <div class="mb-5 pb-4 border-bottom">
+                <h4 class="h6 fw-bold text-uppercase text-muted mb-3">Description</h4>
+                <p class="text-muted lh-lg mb-0">{{ product.description }}</p>
             </div>
 
-            {% if product.stock > 0 %}
-            <div style="display: flex; gap: 1rem;">
-                <a href="{{ url_for('buy_now', product_id=product.product_id) }}" class="btn-gradient" style="flex: 2; padding: 1.25rem; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 0.75rem;">
-                    Buy Now
+            <div class="d-flex flex-column flex-sm-row gap-3 mb-5">
+                {% if product.stock > 0 %}
+                <a href="{{ url_for('buy_now', product_id=product.product_id) }}" class="btn btn-primary bg-gradient flex-grow-1 py-3 px-4 fw-bold rounded-4 shadow-sm border-0 d-flex align-items-center justify-content-center gap-2">
+                    <i class="fas fa-bolt"></i> Buy Now
                 </a>
-                <a href="{{ url_for('add_to_cart', product_id=product.product_id) }}" class="btn" style="flex: 1; background: #f1f5f9; color: #475569; padding: 1.25rem; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; border-radius: 16px; text-decoration: none; font-weight: 700;">
-                    <i class="fas fa-cart-plus"></i>
+                <a href="{{ url_for('add_to_cart', product_id=product.product_id) }}" class="btn btn-light flex-grow-1 py-3 px-4 fw-bold rounded-4 border-0 d-flex align-items-center justify-content-center gap-2">
+                    <i class="fas fa-cart-plus"></i> Add to Cart
                 </a>
-                <a href="{{ url_for('add_to_wishlist', product_id=product.product_id) }}" class="btn" style="background: white; border: 1px solid #e2e8f0; color: #64748b; padding: 1rem 1.5rem; border-radius: 16px; font-size: 1.25rem; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s;"
-                   onmouseover="this.style.color='#ef4444'; this.style.transform='scale(1.1)'" onmouseout="this.style.color='#64748b'; this.style.transform='scale(1)'">
-                    <i class="far fa-heart"></i>
-                </a>
-            </div>
-            {% else %}
-            <div style="display: flex; gap: 1rem;">
-                <div style="flex: 2; padding: 1.25rem; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 0.75rem; background: #f1f5f9; border-radius: 16px; color: #94a3b8; font-weight: 700; cursor: not-allowed;">
-                    <i class="fas fa-ban"></i> Currently Unavailable
-                </div>
-                <a href="{{ url_for('add_to_wishlist', product_id=product.product_id) }}" class="btn" style="background: white; border: 1px solid #e2e8f0; color: #64748b; padding: 1rem 1.5rem; border-radius: 16px; font-size: 1.25rem; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: all 0.3s;"
-                   onmouseover="this.style.color='#ef4444'; this.style.transform='scale(1.1)'" onmouseout="this.style.color='#64748b'; this.style.transform='scale(1)'">
-                    <i class="far fa-heart"></i>
+                {% else %}
+                <button class="btn btn-light flex-grow-1 py-3 px-4 fw-bold rounded-4 border-0 disabled w-100">
+                    <i class="fas fa-ban me-2"></i> Currently Unavailable
+                </button>
+                {% endif %}
+                <a href="{{ url_for('add_to_wishlist', product_id=product.product_id) }}" class="btn btn-outline-danger py-3 px-4 rounded-4 border-1 d-flex align-items-center justify-content-center">
+                    <i class="far fa-heart fs-5"></i>
                 </a>
             </div>
-            {% endif %}
 
-            <div style="margin-top: 3rem; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <div style="width: 48px; height: 48px; border-radius: 12px; background: #f8fafc; display: flex; align-items: center; justify-content: center; color: #6366f1;">
-                        <i class="fas fa-shipping-fast" style="font-size: 1.25rem;"></i>
-                    </div>
-                    <div>
-                        <p style="font-weight: 700; font-size: 0.9rem; margin-bottom: 0.1rem;">Free Shipping</p>
-                        <p style="color: #94a3b8; font-size: 0.8rem;">On orders over ₹999</p>
+            <div class="row g-4 pt-2">
+                <div class="col-sm-6">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="p-3 bg-light rounded-3 text-primary">
+                            <i class="fas fa-shipping-fast fs-4"></i>
+                        </div>
+                        <div>
+                            <p class="fw-bold small mb-0">Free Shipping</p>
+                            <p class="text-muted small mb-0">Orders above ₹999</p>
+                        </div>
                     </div>
                 </div>
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <div style="width: 48px; height: 48px; border-radius: 12px; background: #f8fafc; display: flex; align-items: center; justify-content: center; color: #6366f1;">
-                        <i class="fas fa-shield-alt" style="font-size: 1.25rem;"></i>
-                    </div>
-                    <div>
-                        <p style="font-weight: 700; font-size: 0.9rem; margin-bottom: 0.1rem;">Safe Checkout</p>
-                        <p style="color: #94a3b8; font-size: 0.8rem;">Secure SSL Encryption</p>
+                <div class="col-sm-6">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="p-3 bg-light rounded-3 text-primary">
+                            <i class="fas fa-shield-alt fs-4"></i>
+                        </div>
+                        <div>
+                            <p class="fw-bold small mb-0">Safe Checkout</p>
+                            <p class="text-muted small mb-0">SSL Encryption</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -101,26 +100,23 @@
 
     <!-- Related Products -->
     {% if related_products %}
-    <div style="margin-top: 6rem;">
-        <h2 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 2rem;">You may also like</h2>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 2rem;">
+    <div class="mt-5 pt-5">
+        <h3 class="h4 fw-bold text-dark mb-4">You may also like</h3>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
             {% for rel_prod in related_products %}
-            <div class="card" style="padding: 0; overflow: hidden; transition: transform 0.3s; border: 1px solid #f1f5f9;"
-                onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
-                <a href="{{ url_for('product_details', product_id=rel_prod.product_id) }}">
-                    <img src="{{ url_for('static', filename='uploads/product_images/' + rel_prod.image if rel_prod.image else 'default_product.png') }}"
-                        style="width: 100%; height: 240px; object-fit: cover;">
-                </a>
-                <div style="padding: 1.25rem;">
-                    <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem;">
-                        <a href="{{ url_for('product_details', product_id=rel_prod.product_id) }}" style="color: inherit; text-decoration: none;">
-                            {{ rel_prod.name }}
-                        </a>
-                    </h3>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 1.125rem; font-weight: 800; color: #1e293b;">₹{{ rel_prod.price }}</span>
-                        <a href="{{ url_for('add_to_cart', product_id=rel_prod.product_id) }}" style="color: #6366f1; text-decoration: none; font-weight: 700; font-size: 0.9rem;">+ Add</a>
-                    </div>
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden product-card transition-up">
+                    <a href="{{ url_for('product_details', product_id=rel_prod.product_id) }}" class="text-decoration-none">
+                        <img src="{{ url_for('static', filename='uploads/product_images/' + rel_prod.image if rel_prod.image else 'default_product.png') }}"
+                            class="card-img-top" style="height: 200px; object-fit: cover;">
+                        <div class="card-body p-4">
+                            <h4 class="h6 fw-bold text-dark mb-3 text-truncate">{{ rel_prod.name }}</h4>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="h5 fw-bold text-primary mb-0">₹{{ rel_prod.price }}</span>
+                                <span class="btn btn-sm btn-light rounded-pill px-3">View</span>
+                            </div>
+                        </div>
+                    </a>
                 </div>
             </div>
             {% endfor %}

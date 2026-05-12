@@ -23,7 +23,7 @@
                     <td style="padding: 1.25rem 1.5rem; font-weight: 700; color: #6366f1;">#{{ order.order_id }}</td>
                     <td style="padding: 1.25rem 1.5rem;">
                         <p style="font-weight: 600; color: #1e293b; margin-bottom: 0.1rem;">{{ order.user_name }}</p>
-                        <p style="font-size: 0.8rem; color: #64748b;">{{ order.created_at.strftime('%d %b, %H:%M') }}</p>
+                        <p style="font-size: 0.8rem; color: #64748b;">{{ order.created_at | strftime('%d %b, %H:%M') }}</p>
                     </td>
                     <td style="padding: 1.25rem 1.5rem; font-weight: 800; color: #1e293b;">₹{{ order.total_amount }}</td>
                     <td style="padding: 1.25rem 1.5rem;">

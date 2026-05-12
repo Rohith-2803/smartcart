@@ -4,12 +4,10 @@ class Config:
     # Flask Secret Key
     SECRET_KEY = 'your_secret_key_here'
     
-    # MySQL Database Configuration
-    # Change these values according to your local MySQL setup
-    MYSQL_HOST = 'localhost'
-    MYSQL_USER = 'root'
-    MYSQL_PASSWORD = 'Rohith@2805'
-    MYSQL_DB = 'cart_db'
+    # SQLite Database Configuration
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(os.path.abspath(os.path.dirname(__file__)), 'database', 'smartcart.db')
+    DATABASE_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'database', 'smartcart.db')
+
     
     # Upload Configurations
     UPLOAD_FOLDER = os.path.join('static', 'uploads', 'product_images')

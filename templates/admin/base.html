@@ -8,81 +8,162 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Custom CSS -->
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #4f46e5;
+            --bg-light: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-primary);
+        }
+
+        .navbar {
+            background: white !important;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0.75rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            color: var(--primary-color) !important;
+            font-size: 1.5rem;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--text-secondary) !important;
+            padding: 0.5rem 1.25rem !important;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-color) !important;
+            background: #f5f3ff;
+        }
+
+        .admin-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+        }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            padding: 0.5rem;
+        }
+
+        .dropdown-item {
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+    </style>
 </head>
 
-<body style="display: flex; flex-direction: column; min-height: 100vh;">
-    <nav class="admin-navbar">
-        <div class="nav-container">
-            <a href="{{ url_for('admin_dashboard') }}" class="sidebar-brand" style="margin-bottom: 0;">
-                <i class="fas fa-shopping-cart"></i> SmartCart
+<body>
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('admin_dashboard') }}">
+                <i class="fas fa-shopping-cart"></i> SmartCart <span class="badge bg-primary ms-1" style="font-size: 0.65rem; vertical-align: middle;">Admin</span>
             </a>
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#adminNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="adminNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4 gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'admin_dashboard' %}active{% endif %}" href="{{ url_for('admin_dashboard') }}">
+                            <i class="fas fa-chart-line me-2"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'admin_orders' %}active{% endif %}" href="{{ url_for('admin_orders') }}">
+                            <i class="fas fa-box-archive me-2"></i>Orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'item_list' %}active{% endif %}" href="{{ url_for('item_list') }}">
+                            <i class="fas fa-box-open me-2"></i>Products
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'add_item' %}active{% endif %}" href="{{ url_for('add_item') }}">
+                            <i class="fas fa-plus-circle me-2"></i>Add Item
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown">
+                            <div class="text-end d-none d-sm-block me-1">
+                                <p class="mb-0 fw-bold small text-dark">{{ session.get('admin_name', 'Admin') }}</p>
+                                <p class="mb-0 text-muted" style="font-size: 0.7rem;">Merchant Account</p>
+                            </div>
+                            <img src="{{ url_for('static', filename='uploads/admin_profiles/' + session.get('profile_image', 'default.png')) }}" class="avatar">
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end mt-2">
+                            <li><a class="dropdown-item" href="{{ url_for('admin_profile') }}"><i class="fas fa-user-circle me-2 opacity-50"></i>My Profile</a></li>
 
-            <div class="nav-menu">
-                <a href="{{ url_for('admin_dashboard') }}"
-                    class="nav-item {% if request.endpoint == 'admin_dashboard' %}active{% endif %}">
-                    <i class="fas fa-chart-line"></i> Dashboard
-                </a>
-                <a href="{{ url_for('admin_orders') }}"
-                    class="nav-item {% if request.endpoint == 'admin_orders' %}active{% endif %}">
-                    <i class="fas fa-box-archive"></i> Orders
-                </a>
-                <a href="{{ url_for('item_list') }}"
-                    class="nav-item {% if request.endpoint == 'item_list' %}active{% endif %}">
-                    <i class="fas fa-box-open"></i> Products
-                </a>
-                <a href="{{ url_for('add_item') }}"
-                    class="nav-item {% if request.endpoint == 'add_item' %}active{% endif %}">
-                    <i class="fas fa-plus-circle"></i> Add New Product
-                </a>
-                <a href="{{ url_for('admin_profile') }}"
-                    class="nav-item {% if request.endpoint == 'admin_profile' %}active{% endif %}">
-                    <i class="fas fa-user-circle"></i> Profile
-                </a>
-            </div>
-
-            <div class="user-profile">
-                <div style="text-align: right; margin-right: 1rem;">
-                    <p style="font-weight: 600; font-size: 0.85rem;">{{ session.get('admin_name', 'Admin') }}</p>
-                    <a href="{{ url_for('admin_logout') }}"
-                        style="color: var(--danger); font-size: 0.75rem; text-decoration: none; font-weight: 600;">Logout</a>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="{{ url_for('admin_logout') }}"><i class="fas fa-sign-out-alt me-2 opacity-50"></i>Logout</a></li>
+                        </ul>
+                    </div>
                 </div>
-                <img src="{{ url_for('static', filename='uploads/admin_profiles/' + session.get('profile_image', 'default.png')) }}"
-                    alt="Profile" class="avatar">
             </div>
         </div>
     </nav>
 
-    <!-- Main Content Area -->
-    <div class="container" style="flex: 1; display: flex; flex-direction: column; width: 100%; padding-bottom: 0;">
-        <main class="main-content" style="flex: 1;">
-            <header>
-                <h1 style="font-size: 1.5rem; font-weight: 700;">{% block header %}{% endblock %}</h1>
-            </header>
+    <div class="container py-4">
+        <header class="mb-4">
+            <h1 class="h3 fw-bold text-dark">{% block header %}{% endblock %}</h1>
+        </header>
 
-            <!-- Flash Messages -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            {% for category, message in messages %}
-            <div class="alert alert-{{ category }}">
-                {{ message }}
-            </div>
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'danger' if category == 'danger' else 'success' }} alert-dismissible fade show border-0 shadow-sm mb-4" style="border-radius: 12px;">
+            <i class="fas {{ 'fa-exclamation-circle' if category == 'danger' else 'fa-check-circle' }} me-2"></i>
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
 
-            {% block content %}{% endblock %}
-        </main>
-
-        <footer
-            style="padding: 1rem 0; border-top: 1px solid #e2e8f0; text-align: center; color: var(--text-secondary); font-size: 0.85rem; margin-top: auto;">
-            <p style="margin: 0;">&copy; 2026 SmartCart. All rights reserved | Developed by <strong>Rohith</strong></p>
-        </footer>
+        {% block content %}{% endblock %}
     </div>
+
+    <footer class="py-4 border-top bg-white mt-auto">
+        <div class="container text-center text-muted small">
+            <p class="mb-0">&copy; 2026 SmartCart Admin Portal. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const alerts = document.querySelectorAll('.alert');

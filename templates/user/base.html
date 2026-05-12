@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -22,21 +24,36 @@
             color: #1e293b;
         }
 
-        .user-nav {
-            background: rgba(255, 255, 255, 0.8);
+        .navbar {
+            background: rgba(255, 255, 255, 0.9) !important;
             backdrop-filter: blur(10px);
             border-bottom: 1px solid #e2e8f0;
-            padding: 0.6rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            padding: 0.8rem 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #6366f1 !important;
+        }
+
+        .nav-link {
+            color: #64748b !important;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem !important;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: #6366f1 !important;
         }
 
         .auth-card {
             background: white;
             padding: 2.5rem;
             border-radius: 20px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 450px;
             margin: 4rem auto;
@@ -51,7 +68,6 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            width: 100%;
             text-align: center;
             text-decoration: none;
             display: inline-block;
@@ -60,75 +76,110 @@
         .btn-gradient:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);
+            color: white;
         }
 
-        .nav-link-user {
-            color: #64748b;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .nav-link-user:hover {
-            color: #6366f1;
+        .cart-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            transform: translate(50%, -50%);
+            background: #6366f1;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: 2px solid white;
         }
     </style>
 </head>
 
 <body>
-    <nav class="user-nav">
-        <div class="container" style="padding: 0 1rem; display: flex; justify-content: space-between; align-items: center;">
-            <a href="/" style="font-size: 1.35rem; font-weight: 800; color: #6366f1; text-decoration: none;">
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
                 <i class="fas fa-shopping-cart"></i> SmartCart
             </a>
-            <div style="display: flex; gap: 1.75rem; align-items: center;">
-                <a href="/" class="nav-link-user" style="font-size: 1rem;">Home</a>
-                
-                {% if request.endpoint in ['user_login', 'user_signup', 'admin_login', 'admin_signup', 'about', 'contact', 'admin_forgot_password', 'forgot_password', 'verify_otp', 'superadmin_login', 'superadmin_signup', 'superadmin_forgot_password'] %}
-                <a href="{{ url_for('about') }}" class="nav-link-user" style="font-size: 1rem;">About</a>
-                <a href="{{ url_for('contact') }}" class="nav-link-user" style="font-size: 1rem;">Contact Us</a>
-                {% else %}
-                <a href="{{ url_for('shop') }}" class="nav-link-user" style="font-size: 1rem;">Shop</a>
-                <a href="{{ url_for('view_wishlist') }}" class="nav-link-user" style="font-size: 1rem;">
-                    <i class="far fa-heart"></i> Wishlist
-                </a>
-                <a href="{{ url_for('view_cart') }}" class="nav-link-user" style="position: relative; font-size: 1rem;">
-                    Cart
-                    {% set cart_count = session.get('cart', {})|length %}
-                    {% if cart_count > 0 %}
-                    <span style="position: absolute; top: -10px; right: -12px; background: #6366f1; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; border: 2px solid white;">
-                        {{ cart_count }}
-                    </span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'index' %}active{% endif %}" href="/">Home</a>
+                    </li>
+                    {% if request.endpoint not in ['user_login', 'user_signup', 'admin_login', 'admin_signup', 'superadmin_login'] %}
+                        {% if session.get('user_id') %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'user_dashboard' %}active{% endif %}" href="{{ url_for('user_dashboard') }}">Dashboard</a>
+                        </li>
+                        {% endif %}
+                        {% if session.get('admin_id') %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'admin_dashboard' %}active{% endif %}" href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'shop' %}active{% endif %}" href="{{ url_for('shop') }}">Shop</a>
+                        </li>
                     {% endif %}
-                </a>
-                {% if session.get('user_id') %}
-                <a href="{{ url_for('my_orders') }}" class="nav-link-user" style="font-size: 1rem;">My Orders</a>
-                <a href="{{ url_for('user_profile') }}" class="nav-link-user" style="font-size: 1rem;">Profile</a>
-                {% endif %}
-                {% endif %}
-
-                {% if session.get('user_id') %}
-                <a href="{{ url_for('user_logout') }}" class="btn" style="background: #fee2e2; color: #ef4444; width: auto; font-size: 0.9rem; padding: 0.5rem 1.25rem; border-radius: 10px;">Logout</a>
-                {% elif session.get('admin_id') %}
-                <a href="{{ url_for('admin_logout') }}" class="btn" style="background: #fee2e2; color: #ef4444; width: auto; font-size: 0.9rem; padding: 0.5rem 1.25rem; border-radius: 10px;">Logout</a>
-                {% else %}
-                {% if request.endpoint != 'user_login' and request.endpoint != 'admin_login' %}
-                <a href="{{ url_for('user_login') }}" class="nav-link-user" style="font-size: 1rem;">Login</a>
-                {% endif %}
-                {% if request.endpoint != 'user_signup' and request.endpoint != 'admin_signup' %}
-                <a href="{{ url_for('user_signup') }}" class="btn-gradient" style="width: auto; padding: 0.6rem 1.5rem; font-size: 0.95rem; border-radius: 12px;">Sign Up</a>
-                {% endif %}
-                {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'about' %}active{% endif %}" href="{{ url_for('about') }}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'contact' %}active{% endif %}" href="{{ url_for('contact') }}">Contact</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center gap-3">
+                    {% if not session.get('user_id') and not session.get('admin_id') %}
+                        <a href="{{ url_for('user_login') }}" class="nav-link">Login</a>
+                        <a href="{{ url_for('user_signup') }}" class="btn-gradient px-4 py-2">Sign Up</a>
+                    {% else %}
+                        {% if session.get('user_id') and request.endpoint not in ['user_login', 'user_signup', 'admin_login', 'admin_signup', 'superadmin_login'] %}
+                            <a href="{{ url_for('view_wishlist') }}" class="nav-link" title="Wishlist">
+                                <i class="far fa-heart fs-5"></i>
+                            </a>
+                            <a href="{{ url_for('view_cart') }}" class="nav-link position-relative" title="Cart">
+                                <i class="fas fa-shopping-bag fs-5"></i>
+                                {% set cart_count = session.get('cart', {})|length %}
+                                {% if cart_count > 0 %}
+                                <span class="cart-badge">{{ cart_count }}</span>
+                                {% endif %}
+                            </a>
+                            <div class="dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="{{ url_for('static', filename='uploads/user_profiles/' + session.get('user_profile_image', 'default.png')) }}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 2px solid #6366f1;">
+                                    <span class="d-none d-sm-inline">{{ session.get('user_name') }}</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-sm mt-2" style="border-radius: 12px;">
+                                    <li><a class="dropdown-item py-2" href="{{ url_for('user_profile') }}"><i class="fas fa-user-circle me-2 opacity-50"></i> Profile</a></li>
+                                    <li><a class="dropdown-item py-2" href="{{ url_for('my_orders') }}"><i class="fas fa-box me-2 opacity-50"></i> My Orders</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item py-2 text-danger" href="{{ url_for('user_logout') }}"><i class="fas fa-sign-out-alt me-2 opacity-50"></i> Logout</a></li>
+                                </ul>
+                            </div>
+                        {% elif session.get('admin_id') and request.endpoint not in ['user_login', 'user_signup', 'admin_login', 'admin_signup', 'superadmin_login'] %}
+                            <a href="{{ url_for('admin_logout') }}" class="btn btn-light rounded-pill px-4">Logout</a>
+                        {% endif %}
+                    {% endif %}
+                </div>
             </div>
         </div>
     </nav>
 
-    <div class="container">
+    <div class="container py-4">
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         {% for category, message in messages %}
-        <div class="alert alert-{{ category }}" style="margin-top: 1rem;">
+        <div class="alert alert-{{ 'danger' if category == 'danger' else 'success' }} alert-dismissible fade show shadow-sm border-0 mb-4" role="alert" style="border-radius: 12px;">
+            <i class="fas {{ 'fa-exclamation-circle' if category == 'danger' else 'fa-check-circle' }} me-2"></i>
             {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         {% endfor %}
         {% endif %}
@@ -137,9 +188,15 @@
         {% block content %}{% endblock %}
     </div>
 
-    <footer style="margin-top: 2rem; padding: 1.5rem 0; text-align: center; color: #94a3b8; border-top: 1px solid #e2e8f0;">
-        <p>&copy; 2026 SmartCart. Built with ❤️ for shoppers.</p>
+    <footer class="py-5 bg-white border-top mt-5">
+        <div class="container text-center text-muted">
+            <p class="mb-1">&copy; 2026 SmartCart. All rights reserved.</p>
+            <p class="small">Built with ❤️ for a better shopping experience.</p>
+        </div>
     </footer>
+
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const alerts = document.querySelectorAll('.alert');

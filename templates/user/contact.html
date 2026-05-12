@@ -3,70 +3,90 @@
 {% block title %}Contact Us{% endblock %}
 
 {% block content %}
-<div style="padding: 4rem 0; max-width: 900px; margin: 0 auto;">
-    <div style="text-align: center; margin-bottom: 3.5rem;">
-        <h1 style="font-size: 3rem; font-weight: 800; color: #1e293b; margin-bottom: 1rem;">Get in <span style="color: #6366f1;">Touch</span></h1>
-        <p style="font-size: 1.25rem; color: #64748b;">Have a question or feedback? We'd love to hear from you.</p>
+<div class="py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-dark mb-2">Get in <span class="text-primary">Touch</span></h1>
+        <p class="lead text-muted">Have a question or feedback? We'd love to hear from you.</p>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 3rem; align-items: start;">
+    <div class="row g-4 align-items-stretch">
         <!-- Contact Info -->
-        <div>
-            <div class="card" style="padding: 2rem; border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-radius: 20px; background: white; margin-bottom: 1.5rem;">
-                <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
-                    <div style="width: 40px; height: 40px; border-radius: 10px; background: #eef2ff; color: #6366f1; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <div>
-                        <h3 style="font-size: 1rem; font-weight: 700;">Email Us</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">support@smartcart.com</p>
+        <div class="col-lg-4">
+            <div class="d-flex flex-column gap-3 h-100">
+                <div class="card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center gap-3 mb-4 pb-2">
+                            <div class="bg-primary bg-opacity-10 text-primary rounded-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-envelope fs-4"></i>
+                            </div>
+                            <div>
+                                <h3 class="h6 fw-bold mb-0">Email Us</h3>
+                                <p class="text-muted small mb-0">support@smartcart.com</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3 mb-4 pb-2">
+                            <div class="bg-success bg-opacity-10 text-success rounded-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-phone fs-4"></i>
+                            </div>
+                            <div>
+                                <h3 class="h6 fw-bold mb-0">Call Us</h3>
+                                <p class="text-muted small mb-0">+91 98765 43210</p>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="bg-warning bg-opacity-10 text-warning rounded-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-location-dot fs-4"></i>
+                            </div>
+                            <div>
+                                <h3 class="h6 fw-bold mb-0">Office</h3>
+                                <p class="text-muted small mb-0">Bengaluru, Karnataka, India</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div style="display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem;">
-                    <div style="width: 40px; height: 40px; border-radius: 10px; background: #f0fdf4; color: #16a34a; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
-                        <i class="fas fa-phone"></i>
-                    </div>
-                    <div>
-                        <h3 style="font-size: 1rem; font-weight: 700;">Call Us</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">+91 98765 43210</p>
-                    </div>
-                </div>
-                <div style="display: flex; gap: 1rem; align-items: center;">
-                    <div style="width: 40px; height: 40px; border-radius: 10px; background: #fff7ed; color: #ea580c; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
-                        <i class="fas fa-location-dot"></i>
-                    </div>
-                    <div>
-                        <h3 style="font-size: 1rem; font-weight: 700;">Office</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">Bengaluru, Karnataka, India</p>
+                
+                <div class="card border-0 shadow-sm rounded-4 bg-primary bg-opacity-10">
+                    <div class="card-body p-4">
+                        <h4 class="h6 fw-bold mb-2">Customer Support</h4>
+                        <p class="small text-muted mb-0">Available Mon-Sat: 9 AM to 7 PM</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Contact Form -->
-        <div class="card" style="padding: 2.5rem; border: none; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); border-radius: 24px; background: white;">
-            <form action="{{ url_for('contact') }}" method="POST">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-                    <div class="form-group">
-                        <label for="name" style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Your Name</label>
-                        <input type="text" id="name" name="name" class="form-control" placeholder="John Doe" required style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 10px;">
-                    </div>
-                    <div class="form-group">
-                        <label for="email" style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Your Email</label>
-                        <input type="email" id="email" name="email" class="form-control" placeholder="john@example.com" required style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 10px;">
-                    </div>
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-body p-4 p-md-5">
+                    <form action="{{ url_for('contact') }}" method="POST">
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-6">
+                                <label for="name" class="form-label small fw-bold">Your Name</label>
+                                <input type="text" id="name" name="name" class="form-control py-3 rounded-3 border-light bg-light shadow-none" placeholder="John Doe" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label small fw-bold">Your Email</label>
+                                <input type="email" id="email" name="email" class="form-control py-3 rounded-3 border-light bg-light shadow-none" placeholder="john@example.com" required>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label for="subject" class="form-label small fw-bold">Subject</label>
+                            <input type="text" id="subject" name="subject" class="form-control py-3 rounded-3 border-light bg-light shadow-none" placeholder="How can we help?" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="message" class="form-label small fw-bold">Message</label>
+                            <textarea id="message" name="message" rows="5" class="form-control py-3 rounded-3 border-light bg-light shadow-none" placeholder="Describe your query in detail..." required style="resize: none;"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary bg-gradient px-5 py-3 fw-bold rounded-pill border-0 shadow-sm">
+                            Send Message <i class="fas fa-paper-plane ms-2"></i>
+                        </button>
+                    </form>
                 </div>
-                <div class="form-group" style="margin-bottom: 1.5rem;">
-                    <label for="subject" style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Subject</label>
-                    <input type="text" id="subject" name="subject" class="form-control" placeholder="How can we help?" required style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 10px;">
-                </div>
-                <div class="form-group" style="margin-bottom: 2rem;">
-                    <label for="message" style="font-weight: 600; font-size: 0.9rem; margin-bottom: 0.5rem; display: block;">Message</label>
-                    <textarea id="message" name="message" rows="5" class="form-control" placeholder="Describe your query in detail..." required style="width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 10px; resize: none;"></textarea>
-                </div>
-                <button type="submit" class="btn-gradient" style="padding: 1rem;">Send Message <i class="fas fa-paper-plane" style="margin-left: 0.5rem;"></i></button>
-            </form>
+            </div>
         </div>
     </div>
 </div>
+
 {% endblock %}

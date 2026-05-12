@@ -3,37 +3,77 @@
 {% block title %}About Us{% endblock %}
 
 {% block content %}
-<div style="padding: 4rem 0; max-width: 800px; margin: 0 auto;">
-    <div style="text-align: center; margin-bottom: 3rem;">
-        <h1 style="font-size: 3rem; font-weight: 800; color: #1e293b; margin-bottom: 1rem;">About <span style="color: #6366f1;">SmartCart</span></h1>
-        <p style="font-size: 1.25rem; color: #64748b; line-height: 1.6;">Your ultimate destination for a seamless and delightful shopping experience.</p>
+<div class="py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-dark mb-2">About <span class="text-primary">SmartCart</span></h1>
+        <p class="lead text-muted">Your ultimate destination for a seamless and delightful shopping experience.</p>
     </div>
 
-    <div class="card" style="padding: 2.5rem; border: none; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); border-radius: 24px; background: white;">
-        <div style="margin-bottom: 2rem;">
-            <h2 style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-bottom: 1rem;">Our Mission</h2>
-            <p style="color: #475569; line-height: 1.7;">At SmartCart, we believe that shopping should be effortless, secure, and enjoyable. Our mission is to provide a platform where quality meets convenience, offering a curated selection of products that cater to your everyday needs and desires.</p>
-        </div>
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-body p-4 p-md-5">
+                    <div class="mb-5">
+                        <h2 class="h4 fw-bold text-dark mb-3">Our Mission</h2>
+                        <p class="text-muted lh-lg">At SmartCart, we believe that shopping should be effortless, secure, and enjoyable. Our mission is to provide a platform where quality meets convenience, offering a curated selection of products that cater to your everyday needs and desires.</p>
+                    </div>
 
-        <div style="margin-bottom: 2rem;">
-            <h2 style="font-size: 1.5rem; font-weight: 700; color: #1e293b; margin-bottom: 1rem;">What We Offer</h2>
-            <ul style="color: #475569; line-height: 1.8; padding-left: 1.25rem;">
-                <li><strong>Premium Quality:</strong> We partner with trusted suppliers to ensure you get the best.</li>
-                <li><strong>Secure Payments:</strong> Your safety is our priority. We use industry-standard encryption.</li>
-                <li><strong>Fast Delivery:</strong> We know you want your items quickly, and we work hard to make that happen.</li>
-                <li><strong>Customer Support:</strong> Our team is always here to help you with any queries.</li>
-            </ul>
-        </div>
+                    <div class="mb-5">
+                        <h2 class="h4 fw-bold text-dark mb-4">What We Offer</h2>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="d-flex gap-3">
+                                    <div class="text-primary"><i class="fas fa-check-circle fs-5"></i></div>
+                                    <div>
+                                        <h5 class="h6 fw-bold text-dark mb-1">Premium Quality</h5>
+                                        <p class="small text-muted mb-0">We partner with trusted suppliers to ensure you get the best products.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex gap-3">
+                                    <div class="text-success"><i class="fas fa-shield-check fs-5"></i></div>
+                                    <div>
+                                        <h5 class="h6 fw-bold text-dark mb-1">Secure Payments</h5>
+                                        <p class="small text-muted mb-0">Your safety is our priority. We use industry-standard encryption.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex gap-3">
+                                    <div class="text-warning"><i class="fas fa-truck-fast fs-5"></i></div>
+                                    <div>
+                                        <h5 class="h6 fw-bold text-dark mb-1">Fast Delivery</h5>
+                                        <p class="small text-muted mb-0">We work hard to ensure your orders reach you as quickly as possible.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex gap-3">
+                                    <div class="text-info"><i class="fas fa-headset fs-5"></i></div>
+                                    <div>
+                                        <h5 class="h6 fw-bold text-dark mb-1">Customer Support</h5>
+                                        <p class="small text-muted mb-0">Our team is always here to help you with any queries or concerns.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-        <div style="text-align: center; padding-top: 1rem;">
-            <p style="color: #94a3b8; font-style: italic;">"SmartCart: Revolutionizing the way you shop, one click at a time."</p>
+                    <div class="text-center mt-5 pt-4 border-top border-light">
+                        <p class="text-muted fst-italic mb-0">"SmartCart: Revolutionizing the way you shop, one click at a time."</p>
+                    </div>
+                </div>
+            </div>
+
+            {% if not session.get('admin_id') %}
+            <div class="text-center mt-5">
+                <a href="{{ url_for('shop') }}" class="btn btn-primary bg-gradient px-5 py-3 rounded-pill fw-bold shadow-sm">
+                    Explore Our Shop <i class="fas fa-arrow-right ms-2"></i>
+                </a>
+            </div>
+            {% endif %}
         </div>
     </div>
-
-    {% if not session.get('admin_id') %}
-    <div style="margin-top: 3rem; text-align: center;">
-        <a href="{{ url_for('shop') }}" class="btn-gradient" style="width: auto; padding: 1rem 2.5rem; font-size: 1.1rem;">Explore Our Shop</a>
-    </div>
-    {% endif %}
 </div>
 {% endblock %}

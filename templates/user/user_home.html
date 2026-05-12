@@ -5,179 +5,187 @@
 {% block content %}
 <div style="padding: 1.5rem 0;">
     <!-- Welcome Header -->
-    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
-        <div>
-            <h1 style="font-size: 2.25rem; font-weight: 800; color: #1e293b; letter-spacing: -0.03em;">Hello, {{ session.get('user_name') }}! 👋</h1>
-            <p style="color: #64748b; font-size: 1.1rem; margin-top: 0.25rem;">Welcome back to your personalized shopping experience.</p>
+    <div class="row align-items-end mb-4 g-3">
+        <div class="col-md">
+            <h1 class="display-5 fw-bold text-dark mb-1">Hello, {{ session.get('user_name') }}! 👋</h1>
+            <p class="text-muted fs-5 mb-0">Welcome back to your personalized shopping experience.</p>
         </div>
-        <div style="display: flex; gap: 1rem;">
-            <a href="{{ url_for('shop') }}" class="btn-gradient" style="width: auto; padding: 0.75rem 1.5rem; border-radius: 12px;">
-                Explore Shop <i class="fas fa-arrow-right" style="margin-left: 0.5rem; font-size: 0.8rem;"></i>
+        <div class="col-md-auto">
+            <a href="{{ url_for('shop') }}" class="btn btn-primary bg-gradient rounded-pill px-4 py-2 border-0 shadow-sm">
+                Explore Shop <i class="fas fa-arrow-right ms-2 small"></i>
             </a>
         </div>
     </div>
 
-    <!-- Scrolling Banner Carousel -->
-    <div class="carousel-container" style="position: relative; width: 100%; height: 400px; border-radius: 24px; overflow: hidden; margin-bottom: 3rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
-        <div class="carousel-slides" style="display: flex; height: 100%; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);">
-            <div class="slide" style="min-width: 100%; position: relative;">
-                <img src="{{ url_for('static', filename='images/banner1.png') }}" style="width: 100%; height: 100%; object-fit: cover;">
-                <div style="position: absolute; bottom: 3rem; left: 3rem; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">
-                    <h2 style="font-size: 3rem; font-weight: 800; margin-bottom: 1rem;">Smart Electronics</h2>
-                    <p style="font-size: 1.25rem; opacity: 0.9;">Upgrade your life with the latest gadgets.</p>
-                    <a href="{{ url_for('shop', category='Electronics') }}" class="btn-gradient" style="width: auto; margin-top: 1.5rem; padding: 1rem 2rem;">Shop Electronics</a>
+    <!-- Bootstrap Carousel -->
+    <div id="heroCarousel" class="carousel slide shadow-lg mb-5" data-bs-ride="carousel" style="border-radius: 24px; overflow: hidden;">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+        </div>
+        <div class="carousel-inner" style="height: 400px;">
+            <div class="carousel-item active h-100">
+                <img src="{{ url_for('static', filename='images/banner1.png') }}" class="d-block w-100 h-100 object-fit-cover">
+                <div class="carousel-caption d-none d-md-block text-start" style="left: 5%; bottom: 10%;">
+                    <h2 class="display-4 fw-bold">Smart Electronics</h2>
+                    <p class="fs-5 opacity-75">Upgrade your life with the latest gadgets.</p>
+                    <a href="{{ url_for('shop', category='Electronics') }}" class="btn btn-primary bg-gradient px-4 py-2 rounded-pill mt-2">Shop Now</a>
                 </div>
             </div>
-            <div class="slide" style="min-width: 100%; position: relative;">
-                <img src="{{ url_for('static', filename='images/banner2.png') }}" style="width: 100%; height: 100%; object-fit: cover;">
-                <div style="position: absolute; bottom: 3rem; left: 3rem; color: white; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">
-                    <h2 style="font-size: 3rem; font-weight: 800; margin-bottom: 1rem;">Fresh Arrivals</h2>
-                    <p style="font-size: 1.25rem; opacity: 0.9;">Stay ahead of the curve with new season trends.</p>
-                    <a href="{{ url_for('shop', category='Fashion') }}" class="btn-gradient" style="width: auto; margin-top: 1.5rem; padding: 1rem 2rem;">Browse Fashion</a>
+            <div class="carousel-item h-100">
+                <img src="{{ url_for('static', filename='images/banner2.png') }}" class="d-block w-100 h-100 object-fit-cover">
+                <div class="carousel-caption d-none d-md-block text-start" style="left: 5%; bottom: 10%;">
+                    <h2 class="display-4 fw-bold">Fresh Arrivals</h2>
+                    <p class="fs-5 opacity-75">Stay ahead of the curve with new season trends.</p>
+                    <a href="{{ url_for('shop', category='Fashion') }}" class="btn btn-primary bg-gradient px-4 py-2 rounded-pill mt-2">Browse Fashion</a>
                 </div>
             </div>
         </div>
-        <button id="prevBtn" style="position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.3); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
-            <i class="fas fa-chevron-left"></i>
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
         </button>
-        <button id="nextBtn" style="position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,0.2); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.3); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
-            <i class="fas fa-chevron-right"></i>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
         </button>
     </div>
 
     <!-- Quick Navigation Cards -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 4rem;">
-        <a href="{{ url_for('my_orders') }}" style="text-decoration: none; color: inherit;">
-            <div class="card" style="border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); cursor: pointer; transition: all 0.3s; border-radius: 20px; background: white;" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 30px -5px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.05)'">
-                <div style="display: flex; align-items: center; gap: 1.25rem;">
-                    <div style="width: 56px; height: 56px; border-radius: 16px; background: #eef2ff; color: #6366f1; display: flex; align-items: center; justify-content: center; font-size: 1.6rem;">
-                        <i class="fas fa-box-open"></i>
-                    </div>
-                    <div>
-                        <h3 style="font-size: 1.15rem; font-weight: 700; color: #1e293b;">My Orders</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">Track, return, or buy things again</p>
-                    </div>
-                </div>
-            </div>
-        </a>
-        <a href="{{ url_for('view_wishlist') }}" style="text-decoration: none; color: inherit;">
-            <div class="card" style="border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); cursor: pointer; transition: all 0.3s; border-radius: 20px; background: white;" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 30px -5px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.05)'">
-                <div style="display: flex; align-items: center; gap: 1.25rem;">
-                    <div style="width: 56px; height: 56px; border-radius: 16px; background: #fff1f2; color: #e11d48; display: flex; align-items: center; justify-content: center; font-size: 1.6rem;">
-                        <i class="fas fa-heart"></i>
-                    </div>
-                    <div>
-                        <h3 style="font-size: 1.15rem; font-weight: 700; color: #1e293b;">Wishlist</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">View items you've saved for later</p>
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <a href="{{ url_for('my_orders') }}" class="text-decoration-none text-dark">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-3 transition-up">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-4 bg-primary-subtle text-primary d-flex align-items-center justify-content-center" style="width: 56px; height: 56px; font-size: 1.5rem;">
+                            <i class="fas fa-box-open"></i>
+                        </div>
+                        <div>
+                            <h3 class="h6 fw-bold mb-1">My Orders</h3>
+                            <p class="text-muted small mb-0">Track or buy things again</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </a>
-        <a href="{{ url_for('user_profile') }}" style="text-decoration: none; color: inherit;">
-            <div class="card" style="border: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); cursor: pointer; transition: all 0.3s; border-radius: 20px; background: white;" onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 15px 30px -5px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.05)'">
-                <div style="display: flex; align-items: center; gap: 1.25rem;">
-                    <div style="width: 56px; height: 56px; border-radius: 16px; background: #f0fdf4; color: #16a34a; display: flex; align-items: center; justify-content: center; font-size: 1.6rem;">
-                        <i class="fas fa-user-circle"></i>
-                    </div>
-                    <div>
-                        <h3 style="font-size: 1.15rem; font-weight: 700; color: #1e293b;">Profile Settings</h3>
-                        <p style="color: #64748b; font-size: 0.9rem;">Manage your address and privacy</p>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ url_for('view_wishlist') }}" class="text-decoration-none text-dark">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-3 transition-up">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-4 bg-danger-subtle text-danger d-flex align-items-center justify-content-center" style="width: 56px; height: 56px; font-size: 1.5rem;">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div>
+                            <h3 class="h6 fw-bold mb-1">Wishlist</h3>
+                            <p class="text-muted small mb-0">Saved for later</p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </a>
+            </a>
+        </div>
+        <div class="col-md-4">
+            <a href="{{ url_for('user_profile') }}" class="text-decoration-none text-dark">
+                <div class="card h-100 border-0 shadow-sm rounded-4 p-3 transition-up">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="rounded-4 bg-success-subtle text-success d-flex align-items-center justify-content-center" style="width: 56px; height: 56px; font-size: 1.5rem;">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div>
+                            <h3 class="h6 fw-bold mb-1">Profile</h3>
+                            <p class="text-muted small mb-0">Manage address & privacy</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
     </div>
 
-    <!-- Top Deals Section (Horizontal Scrolling) -->
-    <div style="margin-bottom: 4rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <!-- Flash Deals Section -->
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h2 style="font-size: 1.85rem; font-weight: 800; color: #1e293b; letter-spacing: -0.02em;">Flash Deals <span style="background: #ef4444; color: white; font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 20px; vertical-align: middle; margin-left: 0.5rem;">Ends in 12h</span></h2>
-                <p style="color: #64748b; margin-top: 0.25rem;">Limited time offers you can't miss.</p>
+                <h2 class="h3 fw-bold text-dark mb-0">Flash Deals <span class="badge bg-danger rounded-pill fs-6 ms-2">Ends in 12h</span></h2>
+                <p class="text-muted mb-0">Limited time offers you can't miss.</p>
             </div>
-            <a href="{{ url_for('shop') }}" style="color: #6366f1; text-decoration: none; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">View All Deals <i class="fas fa-chevron-right" style="font-size: 0.8rem;"></i></a>
+            <a href="{{ url_for('shop') }}" class="text-primary fw-bold text-decoration-none">View All <i class="fas fa-chevron-right small ms-1"></i></a>
         </div>
         
-        <div style="display: flex; gap: 1.5rem; overflow-x: auto; padding: 0.5rem 0 1.5rem 0; scrollbar-width: none; -ms-overflow-style: none;">
-            <style>
-                div::-webkit-scrollbar { display: none; }
-            </style>
+        <div class="d-flex gap-3 overflow-x-auto pb-3 no-scrollbar">
             {% for product in products[:6] %}
-            <div style="min-width: 220px; background: white; border-radius: 20px; border: 1px solid #f1f5f9; padding: 1.25rem; transition: all 0.3s;" onmouseover="this.style.boxShadow='0 10px 15px -3px rgba(0,0,0,0.05)'" onmouseout="this.style.boxShadow='none'">
-                <div style="position: relative; margin-bottom: 1rem;">
-                    <img src="{{ url_for('static', filename='uploads/product_images/' + product.image if product.image else 'default_product.png') }}" style="width: 100%; height: 180px; object-fit: cover; border-radius: 12px;">
-                    <div style="position: absolute; top: 0.5rem; left: 0.5rem; background: #ef4444; color: white; font-size: 0.7rem; font-weight: 800; padding: 0.2rem 0.5rem; border-radius: 4px;">-30%</div>
+            <div class="card border-0 shadow-sm rounded-4 p-2 transition-up" style="min-width: 220px;">
+                <div class="position-relative mb-2">
+                    <img src="{{ url_for('static', filename='uploads/product_images/' + product.image if product.image else 'default_product.png') }}" class="card-img-top rounded-4" style="height: 180px; object-fit: cover;">
+                    <div class="position-absolute top-0 start-0 m-2 badge bg-danger">-30%</div>
                 </div>
-                <h4 style="font-size: 0.95rem; font-weight: 700; color: #1e293b; margin-bottom: 0.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ product.name }}</h4>
-                <div style="display: flex; align-items: center; gap: 0.5rem;">
-                    <span style="font-weight: 800; color: #1e293b; font-size: 1.1rem;">₹{{ (product.price|float * 0.7)|round(2) }}</span>
-                    <span style="color: #94a3b8; text-decoration: line-through; font-size: 0.85rem;">₹{{ product.price }}</span>
+                <div class="p-2 text-center">
+                    <h4 class="h6 fw-bold text-dark mb-2 text-truncate">{{ product.name }}</h4>
+                    <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
+                        <span class="fw-bold text-dark fs-5">₹{{ (product.price|float * 0.7)|round(2) }}</span>
+                        <span class="text-muted small text-decoration-line-through">₹{{ product.price }}</span>
+                    </div>
+                    <a href="{{ url_for('product_details', product_id=product.product_id) }}" class="btn btn-outline-primary btn-sm w-100 rounded-pill">Details</a>
                 </div>
-                <a href="{{ url_for('product_details', product_id=product.product_id) }}" style="text-decoration: none; color: #6366f1; font-size: 0.85rem; font-weight: 700; margin-top: 1rem; display: block;">See Details</a>
             </div>
             {% endfor %}
         </div>
     </div>
 
     <!-- Recommendations Grid -->
-    <div style="margin-bottom: 3rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-            <h2 style="font-size: 1.85rem; font-weight: 800; color: #1e293b; letter-spacing: -0.02em;">Recommended for You</h2>
-            <p style="color: #64748b; font-size: 0.95rem;">Based on your recent activity.</p>
+    <div class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="h3 fw-bold text-dark mb-0">Recommended for You</h2>
+            <p class="text-muted small mb-0 d-none d-sm-block">Based on your activity</p>
         </div>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 2rem;">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
             {% for product in recommended_products %}
-            <div class="card" style="padding: 0; border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden; transition: all 0.3s ease; background: white;" 
-                 onmouseover="this.style.transform='translateY(-10px)'; this.style.boxShadow='0 20px 25px -5px rgba(0,0,0,0.1)'" 
-                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
-                <a href="{{ url_for('product_details', product_id=product.product_id) }}" style="text-decoration: none; color: inherit;">
-                    <div style="position: relative;">
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden product-card transition-up">
+                    <div class="position-relative">
                         <img src="{{ url_for('static', filename='uploads/product_images/' + product.image if product.image else 'default_product.png') }}" 
-                             style="width: 100%; height: 260px; object-fit: cover;">
+                             class="card-img-top" style="height: 260px; object-fit: cover;">
                         <a href="{{ url_for('add_to_wishlist', product_id=product.product_id) }}" 
-                           style="position: absolute; top: 0.75rem; right: 0.75rem; width: 34px; height: 34px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #64748b; text-decoration: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); transition: all 0.3s;"
-                           onmouseover="this.style.color='#ef4444'; this.style.transform='scale(1.1)'" onmouseout="this.style.color='#64748b'; this.style.transform='scale(1)'">
+                           class="btn btn-white position-absolute top-0 end-0 m-2 rounded-circle shadow-sm d-flex align-items-center justify-content-center"
+                           style="width: 36px; height: 36px; background: white; color: #64748b;">
                             <i class="far fa-heart"></i>
                         </a>
                     </div>
-                    <div style="padding: 1.5rem;">
-                        <span style="font-size: 0.75rem; color: #6366f1; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">{{ product.category }}</span>
-                        <h3 style="font-size: 1.1rem; font-weight: 700; margin-top: 0.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ product.name }}</h3>
-                        <div style="margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
-                                <span style="font-size: 1.25rem; font-weight: 800; color: #1e293b;">₹{{ product.price }}</span>
-                                {% if product.stock > 0 %}
-                                <span style="font-size: 0.75rem; color: #10b981; font-weight: 700; background: #dcfce7; padding: 0.2rem 0.5rem; border-radius: 6px;">Available</span>
-                                {% else %}
-                                <span style="font-size: 0.75rem; color: #ef4444; font-weight: 700; background: #fee2e2; padding: 0.2rem 0.5rem; border-radius: 6px;">Out of Stock</span>
-                                {% endif %}
-                            </div>
-                            
+                    <div class="card-body p-4">
+                        <span class="text-primary fw-bold text-uppercase" style="font-size: 0.7rem;">{{ product.category }}</span>
+                        <h3 class="h6 fw-bold my-2 text-truncate">{{ product.name }}</h3>
+                        <p class="text-muted small mb-3 text-truncate-2" style="height: 2.4rem;">
+                            {{ product.description }}
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="h5 fw-bold text-dark mb-0">₹{{ product.price }}</span>
                             {% if product.stock > 0 %}
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                                <a href="{{ url_for('add_to_cart', product_id=product.product_id) }}" class="btn" 
-                                    style="background: #f1f5f9; color: #1e293b; font-size: 0.8rem; font-weight: 700; border-radius: 12px; padding: 0.75rem; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.2s;"
-                                    onmouseover="this.style.background='#e2e8f0'" onmouseout="this.style.background='#f1f5f9'">
-                                    <i class="fas fa-cart-plus"></i> Cart
-                                </a>
-                                <a href="{{ url_for('buy_now', product_id=product.product_id) }}" class="btn-gradient" 
-                                    style="padding: 0.75rem; font-size: 0.8rem; font-weight: 700; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-                                    <i class="fas fa-bolt"></i> Buy Now
-                                </a>
-                            </div>
+                            <span class="badge bg-success-subtle text-success border-0 px-2">Available</span>
                             {% else %}
-                            <div style="text-align: center; padding: 0.75rem; background: #f8fafc; border-radius: 12px; color: #94a3b8; font-weight: 600; font-size: 0.85rem;">
-                                Currently Unavailable
-                            </div>
+                            <span class="badge bg-danger-subtle text-danger border-0 px-2">Out of Stock</span>
                             {% endif %}
                         </div>
+                        
+                        {% if product.stock > 0 %}
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <a href="{{ url_for('add_to_cart', product_id=product.product_id) }}" class="btn btn-light btn-sm w-100 rounded-pill py-2">
+                                    <i class="fas fa-cart-plus me-1"></i> Cart
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a href="{{ url_for('buy_now', product_id=product.product_id) }}" class="btn btn-primary btn-sm w-100 rounded-pill py-2 bg-gradient">
+                                    <i class="fas fa-bolt me-1"></i> Buy
+                                </a>
+                            </div>
+                        </div>
+                        {% else %}
+                        <button class="btn btn-light btn-sm w-100 disabled rounded-pill py-2">Unavailable</button>
+                        {% endif %}
                     </div>
-                </a>
+                </div>
             </div>
             {% endfor %}
         </div>
     </div>
+  </div>
 </div>
 
 <script>

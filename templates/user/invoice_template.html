@@ -76,7 +76,7 @@
 <body>
     <div class="invoice-header">
         <div class="invoice-title">SmartCart Invoice</div>
-        <div>Order #{{ order.order_id }} | Date: {{ order.created_at.strftime('%d/%m/%Y') }}</div>
+        <div>Order #{{ order.order_id }} | Date: {{ order.created_at | strftime('%d/%m/%Y') }}</div>
     </div>
 
     <table class="info-section">

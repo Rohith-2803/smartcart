@@ -3,82 +3,96 @@
 {% block title %}My Profile - SmartCart{% endblock %}
 
 {% block content %}
-<div style="padding: 3rem 0; max-width: 800px; margin: 0 auto;">
-    <h1 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 2rem; text-align: center;">Account Settings</h1>
-
-    <div class="card" style="background: white; border-radius: 24px; padding: 3rem; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);">
-        <form action="{{ url_for('user_profile') }}" method="POST" enctype="multipart/form-data">
-            
-            <!-- Profile Photo Section -->
-            <div style="margin-bottom: 2rem; display: flex; align-items: center; gap: 1.5rem; padding-bottom: 2rem; border-bottom: 1px solid #f1f5f9;">
-                <div style="position: relative;">
-                    {% if user.profile_image and user.profile_image != 'default.png' %}
-                    <img src="{{ url_for('static', filename='uploads/user_profiles/' + user.profile_image) }}" 
-                         alt="Profile Photo" id="profilePreview"
-                         style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #6366f1;">
-                    {% else %}
-                    <div id="profileInitial" style="width: 100px; height: 100px; border-radius: 50%; background: var(--primary-gradient); color: white; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 800;">
-                        {{ user.name[0]|upper }}
-                    </div>
-                    <img src="" alt="Profile Photo" id="profilePreview" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #6366f1; display: none;">
-                    {% endif %}
-                    
-                    <!-- Camera icon overlay -->
-                    <label for="profile_image" style="position: absolute; bottom: 0; right: 0; background: #6366f1; color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; transition: all 0.3s;" title="Change photo">
-                        <i class="fas fa-camera" style="font-size: 0.8rem;"></i>
-                    </label>
-                    <input type="file" name="profile_image" id="profile_image" accept="image/*" style="display: none;" onchange="previewImage(this)">
-                </div>
-                <div>
-                    <h2 style="font-size: 1.5rem; font-weight: 700; color: #1e293b;">{{ user.name }}</h2>
-                    <p style="color: #64748b;">Member since {{ user.created_at.strftime('%B %Y') if user.created_at else 'recently' }}</p>
-                    <p style="color: #94a3b8; font-size: 0.85rem; margin-top: 0.25rem;">Click the <i class="fas fa-camera"></i> icon to change photo</p>
-                </div>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
-                <div>
-                    <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.5rem; font-size: 0.9rem;">Full Name</label>
-                    <input type="text" name="name" value="{{ user.name }}" required 
-                           style="width: 100%; padding: 1rem 1.25rem; border: 1px solid #cbd5e1; border-radius: 12px; font-family: inherit; font-size: 1rem; transition: all 0.3s;"
-                           onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 4px rgba(99,102,241,0.1)'"
-                           onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none'">
-                </div>
-
-                <div>
-                    <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.5rem; font-size: 0.9rem;">Email Address</label>
-                    <input type="email" name="email" value="{{ user.email }}" required 
-                           style="width: 100%; padding: 1rem 1.25rem; border: 1px solid #cbd5e1; border-radius: 12px; font-family: inherit; font-size: 1rem; transition: all 0.3s;"
-                           onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 4px rgba(99,102,241,0.1)'"
-                           onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none'">
-                </div>
-            </div>
-
-            <div style="margin-bottom: 2rem;">
-                <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.5rem; font-size: 0.9rem;">New Password (Optional)</label>
-                <div style="position: relative;">
-                    <i class="fas fa-lock" style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
-                    <input type="password" name="new_password" placeholder="Leave blank to keep current password"
-                           style="width: 100%; padding: 1rem 1.25rem 1rem 3rem; border: 1px solid #cbd5e1; border-radius: 12px; font-family: inherit; font-size: 1rem; transition: all 0.3s;"
-                           onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 0 4px rgba(99,102,241,0.1)'"
-                           onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none'">
-                </div>
-            </div>
-
-            <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 3rem;">
-                <a href="{{ url_for('user_dashboard') }}" class="btn" style="background: #f1f5f9; color: #475569; text-decoration: none; padding: 1rem 2rem; border-radius: 12px; font-weight: 600;">Cancel</a>
-                <button type="submit" class="btn-gradient" style="width: auto; padding: 1rem 2.5rem; border-radius: 12px;">Save Changes</button>
-            </div>
-        </form>
-    </div>
-
-    <div class="card" style="background: white; border-radius: 24px; padding: 2rem; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); margin-top: 2rem; display: flex; justify-content: space-between; align-items: center;">
-        <div>
-            <h3 style="font-size: 1.25rem; font-weight: 700; color: #1e293b; margin-bottom: 0.25rem;">Your Addresses</h3>
-            <p style="color: #64748b; font-size: 0.95rem;">Manage your saved shipping addresses for faster checkout.</p>
+<div class="row justify-content-center py-5">
+    <div class="col-lg-8">
+        <div class="text-center mb-4">
+            <h1 class="display-6 fw-bold">Account Settings</h1>
+            <p class="text-muted">Manage your personal information and security.</p>
         </div>
-        <a href="{{ url_for('user_addresses') }}" class="btn-gradient" style="width: auto; padding: 0.8rem 1.5rem; border-radius: 12px; text-decoration: none;">Manage Addresses</a>
+
+        <div class="card border-0 shadow-sm overflow-hidden" style="border-radius: 24px;">
+            <div class="card-body p-4 p-md-5">
+                <form action="{{ url_for('user_profile') }}" method="POST" enctype="multipart/form-data">
+                    
+                    <!-- Profile Photo Section -->
+                    <div class="d-flex flex-column flex-sm-row align-items-center gap-4 mb-5 pb-4 border-bottom">
+                        <div class="position-relative">
+                            {% if user.profile_image and user.profile_image != 'default.png' %}
+                            <img src="{{ url_for('static', filename='uploads/user_profiles/' + user.profile_image) }}" 
+                                 alt="Profile Photo" id="profilePreview"
+                                 class="rounded-circle shadow-sm"
+                                 style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #f5f3ff;">
+                            {% else %}
+                            <div id="profileInitial" class="rounded-circle shadow-sm d-flex align-items-center justify-content-center text-white fw-bold" 
+                                 style="width: 120px; height: 120px; background: var(--primary-gradient); font-size: 3rem;">
+                                {{ user.name[0]|upper }}
+                            </div>
+                            <img src="" alt="Profile Photo" id="profilePreview" class="rounded-circle shadow-sm border border-4 border-white" style="width: 120px; height: 120px; object-fit: cover; display: none;">
+                            {% endif %}
+                            
+                            <label for="profile_image" class="btn btn-primary position-absolute bottom-0 end-0 rounded-circle d-flex align-items-center justify-content-center shadow-sm" 
+                                   style="width: 38px; height: 38px; border: 3px solid white; cursor: pointer;" title="Change photo">
+                                <i class="fas fa-camera fs-6"></i>
+                            </label>
+                            <input type="file" name="profile_image" id="profile_image" accept="image/*" class="d-none" onchange="previewImage(this)">
+                        </div>
+                        <div class="text-center text-sm-start">
+                            <h2 class="h4 fw-bold mb-1">{{ user.name }}</h2>
+                            <p class="text-muted mb-2">Member since {{ user.created_at | strftime('%B %Y') if user.created_at else 'recently' }}</p>
+                            <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill small">Verified Customer</span>
+                        </div>
+                    </div>
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark small">Full Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i class="fas fa-user text-muted"></i></span>
+                                <input type="text" name="name" value="{{ user.name }}" class="form-control bg-light border-0 py-3 rounded-end" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-dark small">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i class="fas fa-envelope text-muted"></i></span>
+                                <input type="email" name="email" value="{{ user.email }}" class="form-control bg-light border-0 py-3 rounded-end" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="form-label fw-bold text-dark small">New Password (Optional)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-0"><i class="fas fa-lock text-muted"></i></span>
+                            <input type="password" name="new_password" placeholder="Leave blank to keep current password" class="form-control bg-light border-0 py-3 rounded-end">
+                        </div>
+                        <div class="form-text mt-2 small">Ensure your password is at least 8 characters for better security.</div>
+                    </div>
+
+                    <div class="d-flex flex-column-reverse flex-sm-row justify-content-end gap-3 pt-3">
+                        <a href="{{ url_for('user_dashboard') }}" class="btn btn-light px-5 py-3 fw-bold rounded-4">Cancel</a>
+                        <button type="submit" class="btn btn-primary bg-gradient px-5 py-3 fw-bold rounded-4 shadow-sm">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm mt-4 overflow-hidden" style="border-radius: 24px;">
+            <div class="card-body p-4">
+                <div class="row align-items-center g-4">
+                    <div class="col-sm">
+                        <h3 class="h5 fw-bold mb-1">Shipping Addresses</h3>
+                        <p class="text-muted small mb-0">Manage your saved addresses for a faster checkout experience.</p>
+                    </div>
+                    <div class="col-sm-auto">
+                        <a href="{{ url_for('user_addresses') }}" class="btn btn-outline-primary px-4 py-2 fw-bold rounded-pill">Manage Addresses</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 </div>
 
 <script>

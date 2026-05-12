@@ -3,115 +3,115 @@
 {% block title %}My Addresses - SmartCart{% endblock %}
 
 {% block content %}
-<div style="padding: 3rem 0; max-width: 800px; margin: 0 auto;">
-    <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 2rem; text-align: center;">My Addresses</h1>
+<div class="py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <h1 class="h3 fw-bold text-dark mb-4 text-center">My Saved Addresses</h1>
 
-    <!-- Saved Addresses -->
-    {% if addresses and addresses|length > 0 %}
-    <div style="display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem;">
-        {% for addr in addresses %}
-        <div style="background: white; padding: 1.5rem; border: 2px solid {{ '#6366f1' if addr.is_default else '#e2e8f0' }}; border-radius: 16px; display: flex; justify-content: space-between; align-items: flex-start;">
-            <div>
-                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
-                    <span style="font-weight: 700; font-size: 1.05rem;">{{ addr.full_name }}</span>
-                    <span style="background: {{ '#6366f1' if addr.label == 'Home' else '#f59e0b' if addr.label == 'Work' else '#10b981' }}; color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 6px; font-weight: 600;">{{ addr.label }}</span>
-                    {% if addr.is_default %}
-                    <span style="background: #d1fae5; color: #059669; font-size: 0.7rem; padding: 2px 8px; border-radius: 6px; font-weight: 600;">Default</span>
-                    {% endif %}
+            <!-- Saved Addresses -->
+            {% if addresses and addresses|length > 0 %}
+            <div class="d-flex flex-column gap-3 mb-5">
+                {% for addr in addresses %}
+                <div class="card border-2 rounded-4 overflow-hidden {% if addr.is_default %}border-primary bg-primary-subtle bg-opacity-10{% else %}border-light{% endif %}">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                                    <span class="fw-bold text-dark fs-5">{{ addr.full_name }}</span>
+                                    <span class="badge {% if addr.label == 'Home' %}bg-primary{% elif addr.label == 'Work' %}bg-warning text-dark{% else %}bg-success{% endif %} rounded-pill px-2" style="font-size: 0.65rem;">{{ addr.label }}</span>
+                                    {% if addr.is_default %}
+                                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2" style="font-size: 0.65rem;">Default</span>
+                                    {% endif %}
+                                </div>
+                                <p class="text-muted small mb-2 lh-sm">
+                                    {{ addr.address_line1 }}{% if addr.address_line2 %}, {{ addr.address_line2 }}{% endif %}<br>
+                                    {{ addr.city }} - {{ addr.pincode }}, {{ addr.state }}
+                                </p>
+                                <p class="text-dark small mb-0 fw-bold">
+                                    <i class="fas fa-phone-alt text-muted me-1 small"></i> {{ addr.phone }}
+                                </p>
+                            </div>
+                            <div class="d-flex flex-column gap-2 text-end">
+                                {% if not addr.is_default %}
+                                <a href="{{ url_for('set_default_address', address_id=addr.address_id) }}" class="btn btn-link btn-sm text-primary p-0 text-decoration-none fw-bold small">
+                                    Set Default
+                                </a>
+                                {% endif %}
+                                <a href="{{ url_for('delete_address', address_id=addr.address_id) }}" class="btn btn-link btn-sm text-danger p-0" onclick="return confirm('Delete this address?');">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <p style="color: #475569; margin: 0; line-height: 1.6;">
-                    {{ addr.address_line1 }}{% if addr.address_line2 %}, {{ addr.address_line2 }}{% endif %}<br>
-                    {{ addr.city }} - {{ addr.pincode }}, {{ addr.state }}
-                </p>
-                <p style="color: #64748b; font-size: 0.9rem; margin-top: 0.25rem;">
-                    <i class="fas fa-phone-alt" style="font-size: 0.75rem;"></i> {{ addr.phone }}
-                </p>
+                {% endfor %}
             </div>
-            <div style="display: flex; gap: 0.75rem; align-items: center;">
-                {% if not addr.is_default %}
-                <a href="{{ url_for('set_default_address', address_id=addr.address_id) }}" style="color: #6366f1; font-size: 0.85rem; text-decoration: none; font-weight: 600;">Set Default</a>
-                {% endif %}
-                <a href="{{ url_for('delete_address', address_id=addr.address_id) }}" style="color: #ef4444; font-size: 0.85rem;" onclick="return confirm('Delete this address?');">
-                    <i class="fas fa-trash-alt"></i>
-                </a>
+            {% else %}
+            <div class="text-center py-4 bg-light rounded-4 border border-dashed mb-5">
+                <p class="text-muted mb-0 small">No saved addresses yet. Add one below!</p>
+            </div>
+            {% endif %}
+
+            <!-- Add New Address -->
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4 p-md-5">
+                    <h2 class="h5 fw-bold text-dark mb-4"><i class="fas fa-plus-circle text-primary me-2"></i> Add New Address</h2>
+                    <form action="{{ url_for('add_address') }}" method="POST">
+                        <div class="btn-group w-100 mb-4 rounded-3 overflow-hidden shadow-sm border">
+                            <input type="radio" class="btn-check" name="label" id="addr-Home" value="Home" checked autocomplete="off">
+                            <label class="btn btn-outline-primary border-0 py-2" for="addr-Home"><i class="fas fa-home me-2"></i>Home</label>
+                            
+                            <input type="radio" class="btn-check" name="label" id="addr-Work" value="Work" autocomplete="off">
+                            <label class="btn btn-outline-primary border-0 py-2" for="addr-Work"><i class="fas fa-briefcase me-2"></i>Work</label>
+                            
+                            <input type="radio" class="btn-check" name="label" id="addr-Other" value="Other" autocomplete="off">
+                            <label class="btn btn-outline-primary border-0 py-2" for="addr-Other"><i class="fas fa-map-pin me-2"></i>Other</label>
+                        </div>
+
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Full Name *</label>
+                                <input type="text" name="full_name" class="form-control py-2 rounded-3 border-light bg-light" value="{{ session.get('user_name', '') }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold">Phone Number *</label>
+                                <input type="tel" name="phone" class="form-control py-2 rounded-3 border-light bg-light" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Address Line 1 *</label>
+                            <input type="text" name="address_line1" class="form-control py-2 rounded-3 border-light bg-light" placeholder="House/Flat No, Street" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Address Line 2 (Optional)</label>
+                            <input type="text" name="address_line2" class="form-control py-2 rounded-3 border-light bg-light" placeholder="Landmark, Area">
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">City *</label>
+                                <input type="text" name="city" class="form-control py-2 rounded-3 border-light bg-light" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">State *</label>
+                                <input type="text" name="state" class="form-control py-2 rounded-3 border-light bg-light" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold">Pincode *</label>
+                                <input type="text" name="pincode" class="form-control py-2 rounded-3 border-light bg-light" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary bg-gradient w-100 py-3 fw-bold rounded-4 border-0 shadow-sm">
+                            Save Address
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
-        {% endfor %}
-    </div>
-    {% else %}
-    <p style="text-align: center; color: #94a3b8; margin-bottom: 2rem;">No saved addresses yet.</p>
-    {% endif %}
-
-    <!-- Add New Address -->
-    <div style="background: white; padding: 2.5rem; border-radius: 24px; border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);">
-        <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem;"><i class="fas fa-plus-circle" style="color: #6366f1;"></i> Add New Address</h2>
-        <form action="{{ url_for('add_address') }}" method="POST">
-            <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem;">
-                <label style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.6rem; border: 2px solid #6366f1; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.9rem; background: #f5f3ff; color: #6366f1;" id="ml-Home">
-                    <input type="radio" name="label" value="Home" checked style="display: none;" onchange="selectMLabel('Home')">
-                    <i class="fas fa-home"></i> Home
-                </label>
-                <label style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.6rem; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.9rem;" id="ml-Work">
-                    <input type="radio" name="label" value="Work" style="display: none;" onchange="selectMLabel('Work')">
-                    <i class="fas fa-briefcase"></i> Work
-                </label>
-                <label style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.6rem; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 0.9rem;" id="ml-Other">
-                    <input type="radio" name="label" value="Other" style="display: none;" onchange="selectMLabel('Other')">
-                    <i class="fas fa-map-pin"></i> Other
-                </label>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
-                <div>
-                    <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.4rem; font-size: 0.85rem;">Full Name *</label>
-                    <input type="text" name="full_name" value="{{ session.get('user_name', '') }}" required style="width: 100%; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit;">
-                </div>
-                <div>
-                    <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.4rem; font-size: 0.85rem;">Phone *</label>
-                    <input type="tel" name="phone" required style="width: 100%; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit;">
-                </div>
-            </div>
-            <div style="margin-bottom: 1rem;">
-                <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.4rem; font-size: 0.85rem;">Address Line 1 *</label>
-                <input type="text" name="address_line1" required placeholder="House No., Building, Street" style="width: 100%; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit;">
-            </div>
-            <div style="margin-bottom: 1rem;">
-                <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.4rem; font-size: 0.85rem;">Address Line 2</label>
-                <input type="text" name="address_line2" placeholder="Area, Landmark" style="width: 100%; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit;">
-            </div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
-                <div>
-                    <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.4rem; font-size: 0.85rem;">City *</label>
-                    <input type="text" name="city" required style="width: 100%; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit;">
-                </div>
-                <div>
-                    <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.4rem; font-size: 0.85rem;">State *</label>
-                    <input type="text" name="state" required style="width: 100%; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit;">
-                </div>
-                <div>
-                    <label style="display: block; font-weight: 600; color: #475569; margin-bottom: 0.4rem; font-size: 0.85rem;">Pincode *</label>
-                    <input type="text" name="pincode" required style="width: 100%; padding: 0.8rem; border: 1px solid #cbd5e1; border-radius: 10px; font-family: inherit;">
-                </div>
-            </div>
-            <button type="submit" class="btn-gradient" style="width: 100%; padding: 1rem; border-radius: 12px;">Save Address</button>
-        </form>
     </div>
 </div>
 
-<script>
-function selectMLabel(type) {
-    ['Home', 'Work', 'Other'].forEach(function(t) {
-        var el = document.getElementById('ml-' + t);
-        if (t === type) {
-            el.style.borderColor = '#6366f1';
-            el.style.background = '#f5f3ff';
-            el.style.color = '#6366f1';
-        } else {
-            el.style.borderColor = '#e2e8f0';
-            el.style.background = 'white';
-            el.style.color = '#475569';
-        }
-    });
-}
-</script>
 {% endblock %}

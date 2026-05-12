@@ -8,98 +8,167 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .admin-navbar .nav-item {
-            color: rgba(255, 255, 255, 0.7) !important;
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
         }
 
-        .admin-navbar .nav-item:hover {
-            background: rgba(255, 255, 255, 0.1) !important;
-            color: #fff !important;
+        .navbar-dark-custom {
+            background: #0f172a !important;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .admin-navbar .nav-item.active {
-            background: #6366f1 !important;
-            color: #fff !important;
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.4rem;
         }
 
-        .admin-navbar .nav-item i {
+        .nav-link {
+            color: #94a3b8 !important; /* Muted Slate gray */
+            font-weight: 500;
+            padding: 0.6rem 1.25rem !important;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .nav-link i {
             font-size: 1.1rem;
+            opacity: 0.8;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #6366f1 !important; /* Indigo Primary on hover */
+            background: rgba(99, 102, 241, 0.1) !important;
+        }
+
+        .nav-link:hover i {
+            opacity: 1;
+            transform: scale(1.1);
+            color: #6366f1;
+        }
+
+        .nav-link.active {
+            color: #fff !important;
+            background: #6366f1;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            object-fit: cover;
+            border: 2px solid #6366f1;
+        }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 0.5rem;
+            min-width: 200px;
+        }
+
+        .dropdown-item {
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
     </style>
 </head>
 
-<body style="display: flex; flex-direction: column; min-height: 100vh; background: #f8fafc;">
-    <nav class="admin-navbar" style="background: #0f172a; border-bottom: 1px solid rgba(255,255,255,0.1); box-shadow: none;">
-        <div class="nav-container">
-            <a href="{{ url_for('superadmin_dashboard') }}" class="sidebar-brand" style="margin-bottom: 0; color: #fff;">
-                <i class="fas fa-shield-halved" style="color: #6366f1;"></i> Super Admin
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-xl navbar-dark navbar-dark-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('superadmin_dashboard') }}">
+                <i class="fas fa-shield-halved text-primary me-2"></i> SuperAdmin
             </a>
-
-            <div class="nav-menu">
-                <a href="{{ url_for('superadmin_dashboard') }}"
-                    class="nav-item {% if request.endpoint == 'superadmin_dashboard' %}active{% endif %}">
-                    <i class="fas fa-chart-line"></i> Global Dashboard
-                </a>
-                <a href="{{ url_for('superadmin_admins') }}"
-                    class="nav-item {% if request.endpoint == 'superadmin_admins' %}active{% endif %}">
-                    <i class="fas fa-users-gear"></i> Manage Admins
-                </a>
-                <a href="{{ url_for('superadmin_products') }}"
-                    class="nav-item {% if request.endpoint == 'superadmin_products' %}active{% endif %}">
-                    <i class="fas fa-boxes-stacked"></i> All Products
-                </a>
-                <a href="{{ url_for('superadmin_orders') }}"
-                    class="nav-item {% if request.endpoint == 'superadmin_orders' %}active{% endif %}">
-                    <i class="fas fa-receipt"></i> Global Orders
-                </a>
-                <a href="{{ url_for('superadmin_revenue') }}"
-                    class="nav-item {% if request.endpoint == 'superadmin_revenue' %}active{% endif %}">
-                    <i class="fas fa-sack-dollar"></i> Revenue
-                </a>
-            </div>
-
-            <div class="user-profile">
-                <div style="text-align: right; margin-right: 1rem;">
-                    <p style="font-weight: 600; font-size: 0.85rem; color: #fff; margin-bottom: 0.1rem;">{{ session.get('admin_name', 'Super Admin') }}</p>
-                    <div style="display: flex; gap: 0.75rem; justify-content: flex-end; align-items: center;">
-                        <a href="{{ url_for('superadmin_profile') }}"
-                            style="color: #6366f1; font-size: 0.75rem; text-decoration: none; font-weight: 600;">Profile</a>
-                        <span style="color: rgba(255,255,255,0.2); font-size: 0.75rem;">|</span>
-                        <a href="{{ url_for('admin_logout') }}"
-                            style="color: #ef4444; font-size: 0.75rem; text-decoration: none; font-weight: 600;">Logout</a>
+            <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#superAdminNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="superAdminNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-3 gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'superadmin_dashboard' %}active{% endif %}" href="{{ url_for('superadmin_dashboard') }}">
+                            <i class="fas fa-chart-line"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'superadmin_admins' %}active{% endif %}" href="{{ url_for('superadmin_admins') }}">
+                            <i class="fas fa-users-gear"></i> Admins
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'superadmin_products' %}active{% endif %}" href="{{ url_for('superadmin_products') }}">
+                            <i class="fas fa-boxes-stacked"></i> Products
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'superadmin_orders' %}active{% endif %}" href="{{ url_for('superadmin_orders') }}">
+                            <i class="fas fa-receipt"></i> Orders
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'superadmin_revenue' %}active{% endif %}" href="{{ url_for('superadmin_revenue') }}">
+                            <i class="fas fa-sack-dollar"></i> Revenue
+                        </a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2 p-0" href="#" role="button" data-bs-toggle="dropdown">
+                            <div class="text-end d-none d-sm-block me-1">
+                                <p class="mb-0 fw-bold small text-white">{{ session.get('admin_name', 'Super Admin') }}</p>
+                                <p class="mb-0 text-primary fw-bold" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em;">Root Access</p>
+                            </div>
+                            <img src="{{ url_for('static', filename='uploads/admin_profiles/' + session.get('profile_image', 'default.png')) }}" class="avatar">
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end mt-2">
+                            <li><a class="dropdown-item" href="{{ url_for('superadmin_profile') }}"><i class="fas fa-user-shield me-2 opacity-50"></i>Profile Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="{{ url_for('admin_logout') }}"><i class="fas fa-power-off me-2 opacity-50"></i>System Logout</a></li>
+                        </ul>
                     </div>
                 </div>
-                <a href="{{ url_for('superadmin_profile') }}">
-                    <img src="{{ url_for('static', filename='uploads/admin_profiles/' + session.get('profile_image', 'default.png')) }}"
-                        alt="Profile" class="avatar" style="border: 2px solid #6366f1; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
-                </a>
             </div>
         </div>
     </nav>
 
-    <div class="container" style="flex: 1; display: flex; flex-direction: column; width: 100%; padding-bottom: 0;">
-        <main class="main-content" style="flex: 1;">
-            <!-- Flash Messages -->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            {% for category, message in messages %}
-            <div class="alert alert-{{ category }}" style="border-radius: 12px; margin-bottom: 2rem;">
-                {{ message }}
-            </div>
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
+    <div class="container py-4 flex-grow-1">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'danger' if category == 'danger' else 'primary' }} alert-dismissible fade show border-0 shadow-sm mb-4" style="border-radius: 12px;">
+            <i class="fas {{ 'fa-shield-exclamation' if category == 'danger' else 'fa-shield-check' }} me-2"></i>
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
 
-            {% block content %}{% endblock %}
-        </main>
-
-        <footer style="padding: 1.5rem 0; border-top: 1px solid #e2e8f0; text-align: center; color: #64748b; font-size: 0.85rem; margin-top: auto;">
-            <p style="margin: 0;">&copy; 2026 SmartCart Enterprise | Super Admin Portal</p>
-        </footer>
+        {% block content %}{% endblock %}
     </div>
+
+    <footer class="py-4 border-top bg-white mt-auto">
+        <div class="container text-center text-muted small">
+            <p class="mb-0">&copy; 2026 SmartCart Enterprise Management Console</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const alerts = document.querySelectorAll('.alert');
